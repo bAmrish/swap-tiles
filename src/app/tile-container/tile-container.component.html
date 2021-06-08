@@ -1,13 +1,11 @@
-<div class="game-container">
-    <div class="tile-container">
-        <div *ngFor="let number of numbers">
-            <ng-template [ngIf]="number==BLANK_TILE">
-                <app-blank-tile></app-blank-tile>
-            </ng-template>
-            <ng-template [ngIf]="number!=BLANK_TILE">
-                <app-tile [number]=number (tileClick)="onTileClick($event)"></app-tile>
-            </ng-template>
-        </div>
+<div class="tile-container">
+    <div *ngFor="let number of numbers">
+        <ng-template [ngIf]="number==BLANK_TILE">
+            <app-blank-tile></app-blank-tile>
+        </ng-template>
+        <ng-template [ngIf]="number!=BLANK_TILE">
+            <app-tile [number]=number (tileClick)="onTileClick($event)"></app-tile>
+        </ng-template>
     </div>
 </div>
 
