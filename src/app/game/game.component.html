@@ -1,0 +1,8 @@
+<div class="game-container">
+   <app-tile-container [numbers]="numbers" (onMove)="handleMove($event)"></app-tile-container>
+    <div class="message-container">
+        <div class="moves"> Moves: {{moves}} </div>
+        <div class="win-message" *ngIf="gameWon"> You Won!</div>
+    </div>
+</div>
+
