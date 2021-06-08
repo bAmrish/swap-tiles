@@ -2,6 +2,9 @@
   "name": "swap-tiles",
   "version": "0.0.0",
   "scripts": {
+    "android": "ns run android --no-hmr",
+    "ios": "ns run ios --no-hmr",
+    "mobile": "ns run",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
@@ -18,14 +21,22 @@
     "@angular/platform-browser": "~12.0.3",
     "@angular/platform-browser-dynamic": "~12.0.3",
     "@angular/router": "~12.0.3",
+    "@nativescript/angular": "~10.1.0",
+    "@nativescript/core": "~7.0.0",
+    "@nativescript/theme": "~2.5.0",
+    "reflect-metadata": "~0.1.12",
     "rxjs": "~6.6.0",
     "tslib": "^2.1.0",
+    "tslint": "^5.16.0",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~12.0.3",
     "@angular/cli": "~12.0.3",
     "@angular/compiler-cli": "~12.0.3",
+    "@nativescript/schematics": "^11.2.0",
+    "@nativescript/tslint-rules": "~0.0.5",
+    "@nativescript/webpack": "~3.0.0",
     "@types/jasmine": "~3.6.0",
     "@types/node": "^12.11.1",
     "jasmine-core": "~3.7.0",
@@ -34,6 +45,8 @@
     "karma-coverage": "~2.0.3",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
+    "nativescript-dev-webpack": "^1.5.1",
     "typescript": "~4.2.3"
-  }
+  },
+  "main": "main.tns.js"
 }

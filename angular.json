@@ -107,5 +107,8 @@
       }
     }
   },
-  "defaultProject": "swap-tiles"
+  "defaultProject": "swap-tiles",
+  "cli": {
+    "defaultCollection": "@nativescript/schematics"
+  }
 }
