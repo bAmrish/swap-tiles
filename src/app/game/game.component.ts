@@ -7,6 +7,7 @@ import {Component} from '@angular/core';
 })
 export class GameComponent {
   seedNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  startNumbers: number[] = [];
   numbers: number[] = [];
   moves = 0;
   gameWon = false;
@@ -26,6 +27,13 @@ export class GameComponent {
       const n = startNumbers.splice(pick, 1);
       this.numbers.push(n[0])
     }
+    this.startNumbers = this.numbers.slice(0);
+  }
+
+  reset= () => {
+    this.numbers = this.startNumbers.slice(0);
+    this.moves = 0;
+    this.gameWon = false;
   }
 
   handleMove = (number: number) => {
