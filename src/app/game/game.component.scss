@@ -1,5 +1,7 @@
 .game-container {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .message-container {
@@ -8,4 +10,5 @@
   padding: 20px;
   font-family: Baloo, serif;
   font-size: 24px;
+  width: 200px;
 }
