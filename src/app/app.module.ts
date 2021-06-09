@@ -1,22 +1,18 @@
 import {NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app.routing.module';
-import {GameComponent} from './game/game.component';
-import {TileContainerComponent} from './tile-container/tile-container.component';
-import {BlankTileComponent} from './tile/blank-tile.component';
-import {TileComponent} from './tile/tile.component';
+import {GameModule} from './game/game.module';
+import {GameRoutingModule} from './game/game.routing.module';
 
 @NgModule({
   declarations: [
-    AppComponent, GameComponent, TileContainerComponent, TileComponent, BlankTileComponent
+    AppComponent
   ],
   imports: [
-    BrowserModule, AppRoutingModule, FormsModule
+    BrowserModule, GameModule, GameRoutingModule, AppRoutingModule
   ],
-  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -2,7 +2,7 @@
     <div class="dimension-selector">
         <div *ngFor="let dim of dimensions" class="dimension-radio">
             <input type="radio" [value]=dim id="dim-{{dim}}"
-                   [(ngModel)]="dimension" (click)="newGame(null, dim)">
+                   [(ngModel)]="dimension" (change)="newGame(null, dim)">
             <label for="dim-{{dim}}">{{dim}} x {{dim}}</label>
         </div>
 
