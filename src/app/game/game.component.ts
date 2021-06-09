@@ -48,7 +48,10 @@ export class GameComponent {
     let won = true;
     for (let index = 0; index < this.numbers.length; index++) {
       const number = this.numbers[index];
-      if (number != index + 1) {
+      if ((number === 7 || number === 8) && (index !== 6 && index !== 7)) {
+        won = false
+      }
+      if (number < 7 && number !== index + 1) {
         won = false;
       }
     }
