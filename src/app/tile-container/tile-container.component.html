@@ -1,4 +1,4 @@
-<div class="tile-container">
+<div class="tile-container tile-container-{{dimension}}">
     <div *ngFor="let number of numbers">
         <ng-template [ngIf]="number==BLANK_TILE">
             <app-blank-tile></app-blank-tile>

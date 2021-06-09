@@ -1,6 +1,14 @@
 <div class="game">
+    <div class="dimension-selector">
+        <div *ngFor="let dim of dimensions" class="dimension-radio">
+            <input type="radio" [value]=dim id="dim-{{dim}}"
+                   [(ngModel)]="dimension" (click)="newGame(null, dim)">
+            <label for="dim-{{dim}}">{{dim}} x {{dim}}</label>
+        </div>
+
+    </div>
     <div class="game-container">
-        <app-tile-container [numbers]="numbers" (onMove)="handleMove($event)"></app-tile-container>
+        <app-tile-container [dimension]=dimension [numbers]="numbers" (onMove)="handleMove($event)"></app-tile-container>
         <div class="message-container">
             <div class="toolbar">
                 <button (click)="newGame(null, this.dimension)">New Game</button>

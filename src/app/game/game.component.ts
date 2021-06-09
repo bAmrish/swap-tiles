@@ -7,15 +7,18 @@ import {ActivatedRoute, Router} from '@angular/router';
   styleUrls: ['./game.component.scss']
 })
 export class GameComponent implements OnInit {
+  dimensions = [3, 4, 5, 6, 7, 8, 9, 10];
   seedNumbers: number[] = [];
-  dimension = 0;
   neighbours: Record<number, number[]> = {};
   startNumbers: number[] = [];
   numbers: number[] = [];
   moves = 0;
   gameWon = false;
   BLANK_TILE = 0;
-
+  private DEFAULT_DIMENSION = 3;
+  dimension = this.DEFAULT_DIMENSION;
+  private MIN_DIMENSION = 3;
+  private MAX_DIMENSION = 10;
 
   constructor(private route: ActivatedRoute, private router: Router) {
   }
@@ -35,8 +38,8 @@ export class GameComponent implements OnInit {
     this.gameWon = false;
     this.numbers = [];
 
-    if (!dimension || dimension < 3 || dimension > 5) {
-      this.dimension = 3;
+    if (!dimension || dimension < this.MIN_DIMENSION || dimension > this.MAX_DIMENSION) {
+      this.dimension = this.DEFAULT_DIMENSION;
     } else {
       this.dimension = dimension;
     }
@@ -93,7 +96,7 @@ export class GameComponent implements OnInit {
 
   private getDataFromQuery(data: string): [number[] | null, number] {
     let isValid = true;
-    let dimension = 3;
+    let dimension = this.DEFAULT_DIMENSION;
     let numbers: number[] = [];
     if (data) {
       numbers = data.split(",")
@@ -128,10 +131,11 @@ export class GameComponent implements OnInit {
     let won = true;
     for (let index = 0; index < this.numbers.length; index++) {
       const number = this.numbers[index];
-      if ((number === 7 || number === 8) && (index !== 6 && index !== 7)) {
+      const totalTiles = this.dimension * this.dimension;
+      if ((number === totalTiles - 2 || number === totalTiles - 1) && (index !== totalTiles - 3 && index !== totalTiles - 2)) {
         won = false
       }
-      if (number < 7 && number !== index + 1) {
+      if (number < totalTiles - 2 && number !== index + 1) {
         won = false;
       }
     }

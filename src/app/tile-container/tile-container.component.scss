@@ -1,7 +1,14 @@
+$dims: 3, 4, 5, 6, 7, 8, 9, 10;
+
+@each $dim in $dims {
+  .tile-container-#{$dim} {
+    width: ($dim*100px);
+  }
+}
 
 .tile-container {
   display: flex;
   flex-wrap: wrap;
-  width: 300px;
+  //width: 300px;
 }
 

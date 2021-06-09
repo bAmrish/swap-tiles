@@ -10,6 +10,14 @@
   justify-content: center;
 }
 
+.dimension-selector {
+  display: flex;
+  justify-content: center;
+}
+
+.dimension-radio {
+  margin-right: 15px;
+}
 .message-container {
   display: flex;
   flex-direction: column;
@@ -18,11 +26,13 @@
   font-size: 24px;
   width: 200px;
 }
+
 .toolbar {
   display: flex;
   flex-direction: column;
 }
-.toolbar button{
+
+.toolbar button {
   width: 200px;
   margin: 5px;
 }
