@@ -6,16 +6,24 @@ import {Component} from '@angular/core';
   styleUrls: ['./game.component.scss']
 })
 export class GameComponent {
-  start_numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  seedNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   numbers: number[] = [];
   moves = 0;
   gameWon = false;
   BLANK_TILE = 9;
 
   ngOnInit() {
-    while (this.start_numbers.length != 0) {
-      const pick = Math.random() * this.start_numbers.length;
-      const n = this.start_numbers.splice(pick, 1);
+    this.newGame();
+  }
+
+  newGame = () => {
+    this.moves = 0;
+    this.gameWon = false;
+    this.numbers = [];
+    const startNumbers = this.seedNumbers.slice(0);
+    while (startNumbers.length != 0) {
+      const pick = Math.random() * startNumbers.length;
+      const n = startNumbers.splice(pick, 1);
       this.numbers.push(n[0])
     }
   }
