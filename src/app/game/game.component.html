@@ -3,7 +3,7 @@
         <app-tile-container [numbers]="numbers" (onMove)="handleMove($event)"></app-tile-container>
         <div class="message-container">
             <div class="toolbar">
-                <button (click)="newGame()">New Game</button>
+                <button (click)="newGame(null)">New Game</button>
                 <button (click)="reset()">Reset</button>
             </div>
             <div class="moves"> Moves: {{moves}} </div>

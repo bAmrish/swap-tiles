@@ -1,11 +1,12 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.scss']
 })
-export class GameComponent {
+export class GameComponent implements OnInit {
   seedNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   startNumbers: number[] = [];
   numbers: number[] = [];
@@ -13,24 +14,59 @@ export class GameComponent {
   gameWon = false;
   BLANK_TILE = 9;
 
-  ngOnInit() {
-    this.newGame();
+
+  constructor(private route: ActivatedRoute, private router: Router) {
   }
 
-  newGame = () => {
+  ngOnInit() {
+    setTimeout(() => {
+      this.route.queryParams.subscribe(params => {
+        const n = params['n'];
+        console.log('n = ', n);
+        let numbers: number[] = [];
+        if (n) {
+          let isValid = true;
+          for (let i = 1; i <= 9; i++) {
+            if (n.indexOf(i.toString()) == -1) {
+              isValid = false;
+              break;
+            }
+          }
+          if (isValid) {
+            numbers = n.toString().split("").map((n: string) => parseInt(n))
+          }
+        }
+        this.newGame(numbers);
+      })
+    }, 0)
+
+  }
+
+  newGame = (numbers: number[] | null) => {
     this.moves = 0;
     this.gameWon = false;
     this.numbers = [];
-    const startNumbers = this.seedNumbers.slice(0);
-    while (startNumbers.length != 0) {
-      const pick = Math.random() * startNumbers.length;
-      const n = startNumbers.splice(pick, 1);
-      this.numbers.push(n[0])
+    if (!numbers || numbers.length == 0) {
+      const startNumbers = this.seedNumbers.slice(0);
+      while (startNumbers.length != 0) {
+        const pick = Math.random() * startNumbers.length;
+        const n = startNumbers.splice(pick, 1);
+        this.numbers.push(n[0])
+      }
+    } else {
+      this.numbers = numbers;
     }
+    this.router.navigate(
+      [],
+      {
+        relativeTo: this.route,
+        queryParams: {n: this.numbers.join("")},
+        queryParamsHandling: 'merge' // remove to replace all query params by provided
+      }).then();
     this.startNumbers = this.numbers.slice(0);
   }
 
-  reset= () => {
+  reset = () => {
     this.numbers = this.startNumbers.slice(0);
     this.moves = 0;
     this.gameWon = false;
