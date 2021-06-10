@@ -1,5 +1,8 @@
+// noinspection JSMethodCanBeStatic
+
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {Game} from '../models/game.model';
 
 @Component({
   selector: 'app-game',
@@ -7,94 +10,93 @@ import {ActivatedRoute, Router} from '@angular/router';
   styleUrls: ['./game.component.scss']
 })
 export class GameComponent implements OnInit {
+  game: Game;
   dimensions = [3, 4, 5, 6, 7, 8, 9, 10];
-  seedNumbers: number[] = [];
-  neighbours: Record<number, number[]> = {};
-  startNumbers: number[] = [];
-  numbers: number[] = [];
-  moves = 0;
-  gameWon = false;
-  BLANK_TILE = 0;
   private DEFAULT_DIMENSION = 3;
   dimension = this.DEFAULT_DIMENSION;
-  private MIN_DIMENSION = 3;
-  private MAX_DIMENSION = 10;
+
 
   constructor(private route: ActivatedRoute, private router: Router) {
+    this.game = this.getNewGame();
+
   }
 
   ngOnInit() {
-
     setTimeout(() => {
       this.route.queryParams.subscribe(params => {
-        this.newGame(...this.getDataFromQuery(params['n']));
+        const numbers = this.getNumbersFromQueryString(params['n']);
+        this.newGame(numbers);
       })
     }, 0)
 
   }
 
-  newGame = (numbers: number[] | null, dimension: number) => {
-    this.moves = 0;
-    this.gameWon = false;
-    this.numbers = [];
+  newGame = (numbers?: number[]) => {
+    this.game = this.getNewGame(numbers);
+    this.setQuery(this.game);
+  }
 
-    if (!dimension || dimension < this.MIN_DIMENSION || dimension > this.MAX_DIMENSION) {
-      this.dimension = this.DEFAULT_DIMENSION;
-    } else {
-      this.dimension = dimension;
-    }
-    this.neighbours = this.findNeighbours(this.dimension);
-    this.seedNumbers =
-      [...new Array(this.dimension * this.dimension)]
-        .map((_, i) => i + 1);
-    this.BLANK_TILE = this.dimension * this.dimension;
+  getNewGame(numbers?: number[]): Game {
+    const totalNumbers = this.dimension * this.dimension;
 
-    if (!numbers || numbers.length == 0 || numbers.length != dimension * dimension) {
-      const startNumbers = this.seedNumbers.slice(0);
-      while (startNumbers.length != 0) {
-        const pick = Math.random() * startNumbers.length;
-        const n = startNumbers.splice(pick, 1);
-        this.numbers.push(n[0])
-      }
-    } else {
-      this.numbers = numbers;
-      this.dimension = dimension;
+    if (!numbers || numbers.length != totalNumbers) {
+      numbers = this.getRandomNumbers(totalNumbers);
     }
 
+    return {
+      id: this.getId(numbers),
+      dimension: this.dimension,
+      numbers: numbers.slice(0),
+      moves: [],
+      neighbours: this.findNeighbours(this.dimension),
+      won: false
+    };
+  }
+
+  reset = () => {
+    this.game = this.game || this.getNewGame();
+    this.game.numbers = this.getNumbers(this.game);
+    this.game.moves = [];
+    this.game.won = false;
+  }
+
+  handleMove = (number: number) => {
+    if (this.game.won) {
+      return;
+    }
+    const numbers = this.game.numbers;
+    const BLANK_TILE = this.game.numbers.length;
+    const posBlank = numbers.indexOf(BLANK_TILE);
+    const posNumber = numbers.indexOf(number);
+
+    if (this.canSwap(posNumber, posBlank)) {
+      numbers.splice(posBlank, 1, number);
+      numbers.splice(posNumber, 1, BLANK_TILE);
+      this.game.moves.push(numbers);
+      this.game.won = this.isGameWon();
+    }
+  }
+
+  setQuery(game: Game) {
     this.router.navigate(
       [],
       {
         relativeTo: this.route,
-        queryParams: {n: this.numbers.join(",")},
+        queryParams: {n: game.id},
         queryParamsHandling: 'merge' // remove to replace all query params by provided
       }).then();
-
-    this.startNumbers = this.numbers.slice(0);
   }
 
-  reset = () => {
-    this.numbers = this.startNumbers.slice(0);
-    this.moves = 0;
-    this.gameWon = false;
+  private getId(numbers: number[]): string {
+    return numbers.join(",");
   }
 
-  handleMove = (number: number) => {
-    if (this.gameWon) {
-      return;
-    }
-
-    const posBlank = this.numbers.indexOf(this.BLANK_TILE);
-    const posNumber = this.numbers.indexOf(number);
-
-    if (this.canSwap(posNumber, posBlank)) {
-      this.numbers.splice(posBlank, 1, number);
-      this.numbers.splice(posNumber, 1, this.BLANK_TILE);
-      this.moves++;
-      this.gameWon = this.isGameWon();
-    }
+  private getNumbers(game: Game): number[] {
+    return game.id.split(",")
+      .map((d: string) => parseInt(d, 10));
   }
 
-  private getDataFromQuery(data: string): [number[] | null, number] {
+  private getNumbersFromQueryString(data: string): number[] {
     let isValid = true;
     let dimension = this.DEFAULT_DIMENSION;
     let numbers: number[] = [];
@@ -121,34 +123,34 @@ export class GameComponent implements OnInit {
       isValid = false;
     }
     if (isValid) {
-      return [numbers, dimension];
+      return numbers;
     } else {
-      return [null, dimension];
+      return [];
     }
   }
 
   private isGameWon() {
     let won = true;
-    for (let index = 0; index < this.numbers.length; index++) {
-      const number = this.numbers[index];
-      const totalTiles = this.dimension * this.dimension;
-      if ((number === totalTiles - 2 || number === totalTiles - 1) && (index !== totalTiles - 3 && index !== totalTiles - 2)) {
+    let numbers = this.game.numbers;
+    let dimension = this.game.dimension;
+    for (let index = 0; index < numbers.length; index++) {
+      const number = numbers[index];
+      const totalTiles = dimension * dimension;
+      if ((number === totalTiles - 2 || number === totalTiles - 1)
+        && (index !== totalTiles - 3 && index !== totalTiles - 2)) {
         won = false
       }
       if (number < totalTiles - 2 && number !== index + 1) {
         won = false;
       }
     }
-
     return won;
   }
 
-  // noinspection JSMethodCanBeStatic
   private canSwap(posNumber: number, posBlank: number): boolean {
-    return this.neighbours[posNumber].indexOf(posBlank) != -1;
+    return this.game.neighbours[posNumber].indexOf(posBlank) != -1;
   }
 
-  // noinspection JSMethodCanBeStatic
   private findNeighbours(d: number): Record<number, number[]> {
     const allNeighbours: Record<number, number[]> = {};
     for (let i = 0; i < d * d; i++) {
@@ -173,5 +175,18 @@ export class GameComponent implements OnInit {
       //console.log(`${i} ${neighbours.sort((a, b) => a - b).join()}`);
     }
     return allNeighbours;
+  }
+
+  private getRandomNumbers(length: number): number [] {
+    const startNumbers = [...new Array(length)].map((_, i) => i + 1);
+    const numbers: number[] = [];
+
+    while (startNumbers.length != 0) {
+      const pick = Math.random() * startNumbers.length;
+      const n = startNumbers.splice(pick, 1);
+      numbers.push(n[0])
+    }
+
+    return numbers;
   }
 }
