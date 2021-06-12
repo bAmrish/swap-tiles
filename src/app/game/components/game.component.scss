@@ -44,6 +44,13 @@ $dims: 3, 4, 5, 6, 7, 8, 9, 10;
   margin-left: -10px;
 }
 
+.timer {
+  display: inline-block;
+  padding: 5px 10px;
+  border: 1px #ccc solid;
+  border-radius: 5px;
+
+}
 ::ng-deep .dimension-selector .mat-form-field-underline,
 ::ng-deep .dimension-selector .mat-form-field-underline:hover{
   display: none !important;

@@ -9,7 +9,7 @@ export class TileComponent {
   @Input() number: number = 0;
   @Input() disable = false;
   @Output() tileClick = new EventEmitter<number>()
-
+  @Input() paused = false;
   onClick = () => {
     this.tileClick.emit(this.number);
   }

@@ -1,23 +1,23 @@
 <div class="game">
     <div class="navbar navbar-light bg-light navbar-expand-sm">
         <div class="container-fluid">
-            <button class="navbar-toggler" type="button"
-                    data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            <button class="navbar-toggler" data-bs-target="#navbarSupportedContent"
+                    data-bs-toggle="collapse" type="button"
             >
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <button mat-flat-button color="primary"
-                                (click)="newGame()"
+                        <button (click)="newGame()" color="primary"
+                                mat-flat-button
                                 matTooltip="Start a new game">
                             New Game
                         </button>
                     </li>
                     <li class="nav-item">
-                        <button mat-flat-button
-                                (click)="reset()"
+                        <button (click)="reset()"
+                                mat-flat-button
                                 matTooltip="Reset Current game">
                             Reset
                         </button>
@@ -25,12 +25,12 @@
                     <li class="nav-item">
                         <mat-form-field class="dimension-selector">
                             <mat-select
-                                    [(ngModel)]="dimension"
-                                    (selectionChange)="newGame()" name="dimension">
+                                    (selectionChange)="newGame()"
+                                    [(ngModel)]="dimension" name="dimension">
                                 <mat-option
-                                        class="dimension-radio"
                                         *ngFor="let dim of dimensions"
-                                        [value]="dim">
+                                        [value]="dim"
+                                        class="dimension-radio">
                                     {{dim}} x {{dim}}
                                 </mat-option>
                             </mat-select>
@@ -39,21 +39,36 @@
                 </ul>
             </div>
 
-            <div class="nav-item">
-                <button mat-icon-button
-                        matTooltip="Undo last move."
-                        (click)="undo()"
-                        [disabled]="game.moveHistory.length <=0">
+            <div *ngIf="!game.solved" class="nav-item">
+                <button (click)="pause()"
+                        *ngIf="!game.paused"
+                        mat-icon-button
+                        matTooltip="Pause the timer">
+                    <mat-icon>pause</mat-icon>
+                </button>
+                <button (click)="unPause()"
+                        *ngIf="game.paused"
+                        mat-icon-button
+                        matTooltip="start the timer">
+                    <mat-icon>play_arrow</mat-icon>
+                </button>
+                <button (click)="undo()"
+                        [disabled]="game.moveHistory.length <=0"
+                        mat-icon-button
+                        matTooltip="Undo last move.">
                     <mat-icon>undo</mat-icon>
                 </button>
-                <button mat-icon-button
-                        matTooltip="Redo last move."
-                        (click)="redo()"
-                        [disabled]="redoStack.length <=0">
+                <button (click)="redo()"
+                        [disabled]="game.redoStack.length <=0"
+                        mat-icon-button
+                        matTooltip="Redo last move.">
                     <mat-icon>redo</mat-icon>
                 </button>
             </div>
 
+            <div class="nav-item">
+                <div *ngIf="game.timer != null" class="timer toolbar-item">{{game.timer.displayTime}}</div>
+            </div>
             <div class="nav-item">
                 <div class="navbar-text moves toolbar-item"> Moves: {{game.totalMoves}} </div>
             </div>
@@ -62,16 +77,18 @@
     </div>
 
     <div class="game-container game-container-{{dimension}}">
-        <div class="solved-message" *ngIf="game.solved">
+        <div *ngIf="game.solved" class="solved-message">
             Solved in {{game.totalMoves}} moves. Good Job!
             <br> Start a
-            <button mat-button (click)="newGame()"> New Game</button>
+            <button (click)="newGame()" mat-button> New Game</button>
         </div>
         <app-tile-container
+                (onMove)="handleMove($event)"
+                (onUnPause)="unPause()"
                 [dimension]=dimension
-                [numbers]="game.currentMove"
                 [disable]="game.solved"
-                (onMove)="handleMove($event)">
+                [numbers]="game.currentMove"
+                [paused]="game.paused">
         </app-tile-container>
     </div>
     <div class="hidden">

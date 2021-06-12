@@ -1,3 +1,5 @@
 <div class="tile" [class.disabled]="disable" (click)="onClick()">
-    <div class="number">{{number}}</div>
+    <div class="number">
+        {{paused ? "?" : number}}
+    </div>
 </div>

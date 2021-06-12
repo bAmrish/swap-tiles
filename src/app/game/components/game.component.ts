@@ -3,6 +3,7 @@
 import {Component, OnInit} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
+import {Timer} from '../../shared/timer';
 import {Game} from '../models/game.model';
 
 @Component({
@@ -13,7 +14,6 @@ import {Game} from '../models/game.model';
 export class GameComponent implements OnInit {
   game: Game;
   dimensions = [3, 4, 5, 6, 7];
-  redoStack: number[][] = []
   private DEFAULT_DIMENSION = 3;
   dimension = this.DEFAULT_DIMENSION;
   private MAX_UNDO = 100;
@@ -45,6 +45,13 @@ export class GameComponent implements OnInit {
     this.game.currentMove = this.getNumbers(this.game);
     this.game.moveHistory = [];
     this.game.solved = false;
+    this.game.timer = new Timer().start();
+    this.game.redoStack = [];
+  }
+
+  unPause = () => {
+    this.game.paused = false;
+    this.game.timer?.start();
   }
 
   handleMove = (number: number) => {
@@ -52,18 +59,18 @@ export class GameComponent implements OnInit {
       return;
     }
     const numbers = this.game.currentMove.slice(0);
-    const BLANK_TILE = this.game.currentMove.length;
-    const posBlank = numbers.indexOf(BLANK_TILE);
+    const posBlank = numbers.indexOf(this.game.BLANK_TILE);
     const posNumber = numbers.indexOf(number);
 
     if (this.canSwap(posNumber, posBlank)) {
       numbers.splice(posBlank, 1, number);
-      numbers.splice(posNumber, 1, BLANK_TILE);
+      numbers.splice(posNumber, 1, this.game.BLANK_TILE);
       this.addToUndoStack(this.game, this.game.currentMove);
       this.game.currentMove = numbers;
       this.game.totalMoves++;
       this.game.solved = this.isSolved();
       if (this.game.solved) {
+        this.game.timer?.stop();
         this.snacksBar.open("solved", "x", {
           horizontalPosition: 'center',
           verticalPosition: 'bottom',
@@ -79,18 +86,23 @@ export class GameComponent implements OnInit {
     if (lastMove) {
       const currentMove = this.game.currentMove.slice(0);
       this.game.currentMove = lastMove;
-      this.redoStack.push(currentMove);
+      this.game.redoStack.push(currentMove);
     }
   }
 
   redo() {
-    const move = this.redoStack.pop();
+    const move = this.game.redoStack.pop();
 
     if (move) {
       const currentMove = this.game.currentMove.slice(0);
       this.game.currentMove = move;
       this.game.moveHistory.push(currentMove);
     }
+  }
+
+  pause() {
+    this.game.paused = true
+    this.game.timer?.stop();
   }
 
   private getNewGame(numbers?: number[]): Game {
@@ -106,9 +118,13 @@ export class GameComponent implements OnInit {
       dimension: this.dimension,
       currentMove: numbers.slice(0),
       moveHistory: [],
+      redoStack: [],
       totalMoves: 0,
       neighbours: this.findNeighbours(this.dimension),
-      solved: false
+      paused: false,
+      solved: false,
+      BLANK_TILE: this.dimension * this.dimension,
+      timer: new Timer().start()
     };
   }
 
@@ -214,7 +230,6 @@ export class GameComponent implements OnInit {
       }
 
       allNeighbours[i] = neighbours;
-      //console.log(`${i} ${neighbours.sort((a, b) => a - b).join()}`);
     }
     return allNeighbours;
   }
