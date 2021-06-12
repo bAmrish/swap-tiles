@@ -40,23 +40,20 @@ $dims: 3, 4, 5, 6, 7, 8, 9, 10;
   color: #116d11
 }
 
-.divider {
-  width: 10px;
-  height: 50%;
-  border-right: 1px solid #999;
-  margin: 0 10px;
+.solved-message button {
+  margin-left: -10px;
 }
 
-::ng-deep .mat-form-field-appearance-standard .mat-form-field-underline,
-::ng-deep .mat-form-field-appearance-standard .mat-form-field-underline:hover{
-  height: 0 !important;
+::ng-deep .dimension-selector .mat-form-field-underline,
+::ng-deep .dimension-selector .mat-form-field-underline:hover{
+  display: none !important;
 }
 
 ::ng-deep .dimension-selector .mat-form-field-wrapper {
   padding: 0;
 }
 
-::ng-deep .dimension-selector.mat-form-field-appearance-standard  .mat-form-field-flex,
-::ng-deep .dimension-selector.mat-form-field-appearance-standard  .mat-form-field-infix{
+::ng-deep .dimension-selector .mat-form-field-flex,
+::ng-deep .dimension-selector .mat-form-field-infix{
   padding-top: 0 !important;
 }

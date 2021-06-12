@@ -23,7 +23,7 @@
                         </button>
                     </li>
                     <li class="nav-item">
-                        <mat-form-field class="dimension-selector" appearance="standard">
+                        <mat-form-field class="dimension-selector">
                             <mat-select
                                     [(ngModel)]="dimension"
                                     (selectionChange)="newGame()" name="dimension">
@@ -44,10 +44,11 @@
         </div>
     </div>
 
-
-
     <div class="game-container game-container-{{dimension}}">
-        <div class="solved-message" *ngIf="game.solved">Solved in {{game.moves.length}} moves. Good Job!</div>
+        <div class="solved-message" *ngIf="game.solved">
+            Solved in {{game.moves.length}} moves. Good Job!
+            <br> Start a <button mat-button (click)="newGame()"> New Game</button>
+        </div>
         <app-tile-container
                 [dimension]=dimension
                 [numbers]="this.game.numbers"
