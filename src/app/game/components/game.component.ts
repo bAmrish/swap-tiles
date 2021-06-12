@@ -18,7 +18,6 @@ export class GameComponent implements OnInit {
 
   constructor(private route: ActivatedRoute, private router: Router) {
     this.game = this.getNewGame();
-
   }
 
   ngOnInit() {

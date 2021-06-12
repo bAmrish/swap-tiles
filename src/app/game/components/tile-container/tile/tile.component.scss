@@ -1,9 +1,11 @@
+@import "src/styles/variables";
+
 .tile {
   display: flex;
-  background: linear-gradient(90deg, rgba(233, 229, 229, 1) 0%, rgba(255, 249, 249, 1) 52%, rgba(233, 229, 229, 1) 100%);
-  box-shadow: 2px 2px 4px #999;
-  width: 100px;
-  height: 100px;
+  background: $tile-background;
+  box-shadow: $tile-box-shadow;
+  width: $tile-size;
+  height: $tile-size;
   align-items: center;
   justify-content: center;
   align-content: center;
@@ -14,7 +16,7 @@
 
 .number {
   font-family: Limelight, Helvetica, serif;
-  font-size: 2em;
+  font-size: $tile-font;
   display: flex;
   align-content: center;
   padding: 0;
