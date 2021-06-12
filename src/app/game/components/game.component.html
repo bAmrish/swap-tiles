@@ -1,39 +1,53 @@
 <div class="game">
-    <mat-toolbar class="toolbar">
-        <button class="toolbar-item"
-                mat-icon-button color="primary"
-                (click)="newGame()"
-                matTooltip="Start a new game">
-            <mat-icon>add</mat-icon>
-        </button>
+    <div class="navbar navbar-light bg-light navbar-expand-sm">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <button mat-flat-button color="primary"
+                                (click)="newGame()"
+                                matTooltip="Start a new game">
+                            New Game
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button mat-flat-button
+                                (click)="reset()"
+                                matTooltip="Reset Current game">
+                            Reset
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <mat-form-field class="dimension-selector" appearance="standard">
+                            <mat-select
+                                    [(ngModel)]="dimension"
+                                    (selectionChange)="newGame()" name="dimension">
+                                <mat-option
+                                        class="dimension-radio"
+                                        *ngFor="let dim of dimensions"
+                                        [value]="dim">
+                                    {{dim}} x {{dim}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </li>
+                </ul>
+            </div>
+            <div class="nav-item">
+                <div class="navbar-text moves toolbar-item"> Moves: {{this.game.moves.length}} </div>
+            </div>
+        </div>
+    </div>
 
-        <button class="toolbar-item"
-                mat-icon-button
-                (click)="reset()"
-                matTooltip="Reset Current game">
-            <mat-icon>refresh</mat-icon>
-        </button>
-        <div class="divider"></div>
-        <mat-form-field class="toolbar-item dimension-selector" appearance="standard">
-            <mat-select
-                    [(ngModel)]="dimension"
-                    (selectionChange)="newGame()" name="dimension">
-                <mat-option
-                        class="dimension-radio"
-                        *ngFor="let dim of dimensions"
-                        [value]="dim">
-                    {{dim}} x {{dim}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-        <div class="divider"></div>
 
-        <div class="moves toolbar-item"> Moves: {{this.game.moves.length}} </div>
 
-    </mat-toolbar>
-    <div class="solved-message" *ngIf="game.solved">Solved! Good Job!</div>
-
-    <div class="game-container">
+    <div class="game-container game-container-{{dimension}}">
+        <div class="solved-message" *ngIf="game.solved">Solved in {{game.moves.length}} moves. Good Job!</div>
         <app-tile-container
                 [dimension]=dimension
                 [numbers]="this.game.numbers"
