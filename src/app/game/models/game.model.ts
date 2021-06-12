@@ -4,5 +4,5 @@ export interface Game {
   numbers: number[];
   neighbours: Record<number, number[]>;
   moves: number[][];
-  won: boolean;
+  solved: boolean;
 }

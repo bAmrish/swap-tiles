@@ -1,28 +1,44 @@
 <div class="game">
-    <div class="dimension-selector">
-        <div *ngFor="let dim of dimensions" class="dimension-radio">
-            <input type="radio" [value]=dim id="dim-{{dim}}"
-                   [(ngModel)]="dimension" (change)="newGame()">
-            <label for="dim-{{dim}}">{{dim}} x {{dim}}</label>
-        </div>
+    <mat-toolbar class="toolbar">
+        <button class="toolbar-item"
+                mat-icon-button color="primary"
+                (click)="newGame()"
+                matTooltip="Start a new game">
+            <mat-icon>add</mat-icon>
+        </button>
 
-    </div>
+        <button class="toolbar-item"
+                mat-icon-button
+                (click)="reset()"
+                matTooltip="Reset Current game">
+            <mat-icon>refresh</mat-icon>
+        </button>
+        <div class="divider"></div>
+        <mat-form-field class="toolbar-item dimension-selector" appearance="standard">
+            <mat-select
+                    [(ngModel)]="dimension"
+                    (selectionChange)="newGame()" name="dimension">
+                <mat-option
+                        class="dimension-radio"
+                        *ngFor="let dim of dimensions"
+                        [value]="dim">
+                    {{dim}} x {{dim}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <div class="divider"></div>
+
+        <div class="moves toolbar-item"> Moves: {{this.game.moves.length}} </div>
+
+    </mat-toolbar>
+    <div class="solved-message" *ngIf="game.solved">Solved! Good Job!</div>
+
     <div class="game-container">
         <app-tile-container
                 [dimension]=dimension
                 [numbers]="this.game.numbers"
                 (onMove)="handleMove($event)">
         </app-tile-container>
-
-        <div class="message-container">
-            <div class="toolbar">
-                <button (click)="newGame()">New Game</button>
-                <button (click)="reset()">Reset</button>
-            </div>
-            <div class="moves"> Moves: {{this.game.moves.length}} </div>
-            <div class="win-message" *ngIf="this.game.won"> You Won!</div>
-        </div>
     </div>
-
 </div>
 

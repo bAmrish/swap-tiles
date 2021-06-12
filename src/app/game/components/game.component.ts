@@ -1,6 +1,7 @@
 // noinspection JSMethodCanBeStatic
 
 import {Component, OnInit} from '@angular/core';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Game} from '../models/game.model';
 
@@ -11,12 +12,15 @@ import {Game} from '../models/game.model';
 })
 export class GameComponent implements OnInit {
   game: Game;
-  dimensions = [3, 4, 5, 6, 7, 8, 9, 10];
+  dimensions = [3, 4, 5, 6, 7];
   private DEFAULT_DIMENSION = 3;
   dimension = this.DEFAULT_DIMENSION;
 
 
-  constructor(private route: ActivatedRoute, private router: Router) {
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private snacksBar: MatSnackBar) {
     this.game = this.getNewGame();
   }
 
@@ -36,10 +40,11 @@ export class GameComponent implements OnInit {
   }
 
   getNewGame(numbers?: number[]): Game {
-    const totalNumbers = this.dimension * this.dimension;
 
-    if (!numbers || numbers.length != totalNumbers) {
-      numbers = this.getRandomNumbers(totalNumbers);
+    if (numbers && this.isPerfectSquare(numbers.length)) {
+      this.dimension = Math.sqrt(numbers.length);
+    } else {
+      numbers = this.getRandomNumbers(this.dimension * this.dimension);
     }
 
     return {
@@ -48,7 +53,7 @@ export class GameComponent implements OnInit {
       numbers: numbers.slice(0),
       moves: [],
       neighbours: this.findNeighbours(this.dimension),
-      won: false
+      solved: false
     };
   }
 
@@ -56,11 +61,11 @@ export class GameComponent implements OnInit {
     this.game = this.game || this.getNewGame();
     this.game.numbers = this.getNumbers(this.game);
     this.game.moves = [];
-    this.game.won = false;
+    this.game.solved = false;
   }
 
   handleMove = (number: number) => {
-    if (this.game.won) {
+    if (this.game.solved) {
       return;
     }
     const numbers = this.game.numbers;
@@ -72,7 +77,14 @@ export class GameComponent implements OnInit {
       numbers.splice(posBlank, 1, number);
       numbers.splice(posNumber, 1, BLANK_TILE);
       this.game.moves.push(numbers);
-      this.game.won = this.isGameWon();
+      this.game.solved = this.isSolved();
+      if(this.game.solved) {
+        this.snacksBar.open("solved", "x", {
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+          duration: 5 * 1000
+        })
+      }
     }
   }
 
@@ -128,8 +140,8 @@ export class GameComponent implements OnInit {
     }
   }
 
-  private isGameWon() {
-    let won = true;
+  private isSolved() {
+    let solved = true;
     let numbers = this.game.numbers;
     let dimension = this.game.dimension;
     for (let index = 0; index < numbers.length; index++) {
@@ -137,13 +149,13 @@ export class GameComponent implements OnInit {
       const totalTiles = dimension * dimension;
       if ((number === totalTiles - 2 || number === totalTiles - 1)
         && (index !== totalTiles - 3 && index !== totalTiles - 2)) {
-        won = false
+        solved = false
       }
       if (number < totalTiles - 2 && number !== index + 1) {
-        won = false;
+        solved = false;
       }
     }
-    return won;
+    return solved;
   }
 
   private canSwap(posNumber: number, posBlank: number): boolean {
@@ -187,5 +199,9 @@ export class GameComponent implements OnInit {
     }
 
     return numbers;
+  }
+
+  private isPerfectSquare(n: number) {
+    return n && n > 0 && Math.sqrt(n) % 1 === 0;
   }
 }

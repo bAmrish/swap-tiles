@@ -3,7 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {GameComponent} from './components/game.component';
 
 const ROUTES: Routes = [
-  {path: '', component: GameComponent}
+  {path: 'game', component: GameComponent}
 ];
 
 @NgModule({
