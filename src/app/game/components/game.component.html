@@ -38,22 +38,46 @@
                     </li>
                 </ul>
             </div>
+
             <div class="nav-item">
-                <div class="navbar-text moves toolbar-item"> Moves: {{this.game.moves.length}} </div>
+                <button mat-icon-button
+                        matTooltip="Undo last move."
+                        (click)="undo()"
+                        [disabled]="game.moveHistory.length <=0">
+                    <mat-icon>undo</mat-icon>
+                </button>
+                <button mat-icon-button
+                        matTooltip="Redo last move."
+                        (click)="redo()"
+                        [disabled]="redoStack.length <=0">
+                    <mat-icon>redo</mat-icon>
+                </button>
             </div>
+
+            <div class="nav-item">
+                <div class="navbar-text moves toolbar-item"> Moves: {{game.totalMoves}} </div>
+            </div>
+
         </div>
     </div>
 
     <div class="game-container game-container-{{dimension}}">
         <div class="solved-message" *ngIf="game.solved">
-            Solved in {{game.moves.length}} moves. Good Job!
-            <br> Start a <button mat-button (click)="newGame()"> New Game</button>
+            Solved in {{game.totalMoves}} moves. Good Job!
+            <br> Start a
+            <button mat-button (click)="newGame()"> New Game</button>
         </div>
         <app-tile-container
                 [dimension]=dimension
-                [numbers]="this.game.numbers"
+                [numbers]="game.currentMove"
                 (onMove)="handleMove($event)">
         </app-tile-container>
+    </div>
+    <div class="hidden">
+        <div><h3>Moves</h3></div>
+        <div *ngFor="let move of game.moveHistory; let i = index">
+            {{i + 1}}: {{move}}
+        </div>
     </div>
 </div>
 

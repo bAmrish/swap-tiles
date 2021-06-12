@@ -1,8 +1,9 @@
 export interface Game {
   id: string;
   dimension: number;
-  numbers: number[];
+  currentMove: number[];
   neighbours: Record<number, number[]>;
-  moves: number[][];
+  moveHistory: number[][];
   solved: boolean;
+  totalMoves: number;
 }

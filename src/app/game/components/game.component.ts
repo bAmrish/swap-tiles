@@ -13,9 +13,10 @@ import {Game} from '../models/game.model';
 export class GameComponent implements OnInit {
   game: Game;
   dimensions = [3, 4, 5, 6, 7];
+  redoStack: number[][] = []
   private DEFAULT_DIMENSION = 3;
   dimension = this.DEFAULT_DIMENSION;
-
+  private MAX_UNDO = 100;
 
   constructor(
     private route: ActivatedRoute,
@@ -39,7 +40,60 @@ export class GameComponent implements OnInit {
     this.setQuery(this.game);
   }
 
-  getNewGame(numbers?: number[]): Game {
+  reset = () => {
+    this.game = this.game || this.getNewGame();
+    this.game.currentMove = this.getNumbers(this.game);
+    this.game.moveHistory = [];
+    this.game.solved = false;
+  }
+
+  handleMove = (number: number) => {
+    if (this.game.solved) {
+      return;
+    }
+    const numbers = this.game.currentMove.slice(0);
+    const BLANK_TILE = this.game.currentMove.length;
+    const posBlank = numbers.indexOf(BLANK_TILE);
+    const posNumber = numbers.indexOf(number);
+
+    if (this.canSwap(posNumber, posBlank)) {
+      numbers.splice(posBlank, 1, number);
+      numbers.splice(posNumber, 1, BLANK_TILE);
+      this.addToUndoStack(this.game, this.game.currentMove);
+      this.game.currentMove = numbers;
+      this.game.totalMoves++;
+      this.game.solved = this.isSolved();
+      if (this.game.solved) {
+        this.snacksBar.open("solved", "x", {
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom',
+          duration: 5 * 1000
+        });
+      }
+    }
+  }
+
+  undo() {
+    const lastMove = this.game.moveHistory.pop();
+
+    if (lastMove) {
+      const currentMove = this.game.currentMove.slice(0);
+      this.game.currentMove = lastMove;
+      this.redoStack.push(currentMove);
+    }
+  }
+
+  redo() {
+    const move = this.redoStack.pop();
+
+    if (move) {
+      const currentMove = this.game.currentMove.slice(0);
+      this.game.currentMove = move;
+      this.game.moveHistory.push(currentMove);
+    }
+  }
+
+  private getNewGame(numbers?: number[]): Game {
 
     if (numbers && this.isPerfectSquare(numbers.length)) {
       this.dimension = Math.sqrt(numbers.length);
@@ -50,45 +104,15 @@ export class GameComponent implements OnInit {
     return {
       id: this.getId(numbers),
       dimension: this.dimension,
-      numbers: numbers.slice(0),
-      moves: [],
+      currentMove: numbers.slice(0),
+      moveHistory: [],
+      totalMoves: 0,
       neighbours: this.findNeighbours(this.dimension),
       solved: false
     };
   }
 
-  reset = () => {
-    this.game = this.game || this.getNewGame();
-    this.game.numbers = this.getNumbers(this.game);
-    this.game.moves = [];
-    this.game.solved = false;
-  }
-
-  handleMove = (number: number) => {
-    if (this.game.solved) {
-      return;
-    }
-    const numbers = this.game.numbers;
-    const BLANK_TILE = this.game.numbers.length;
-    const posBlank = numbers.indexOf(BLANK_TILE);
-    const posNumber = numbers.indexOf(number);
-
-    if (this.canSwap(posNumber, posBlank)) {
-      numbers.splice(posBlank, 1, number);
-      numbers.splice(posNumber, 1, BLANK_TILE);
-      this.game.moves.push(numbers);
-      this.game.solved = this.isSolved();
-      if(this.game.solved) {
-        this.snacksBar.open("solved", "x", {
-          horizontalPosition: 'center',
-          verticalPosition: 'top',
-          duration: 5 * 1000
-        })
-      }
-    }
-  }
-
-  setQuery(game: Game) {
+  private setQuery(game: Game) {
     this.router.navigate(
       [],
       {
@@ -96,6 +120,13 @@ export class GameComponent implements OnInit {
         queryParams: {n: game.id},
         queryParamsHandling: 'merge' // remove to replace all query params by provided
       }).then();
+  }
+
+  private addToUndoStack(game: Game, move: number[]) {
+    if (game.moveHistory.length >= this.MAX_UNDO) {
+      game.moveHistory.splice(0, 1);
+    }
+    game.moveHistory.push(move);
   }
 
   private getId(numbers: number[]): string {
@@ -142,7 +173,7 @@ export class GameComponent implements OnInit {
 
   private isSolved() {
     let solved = true;
-    let numbers = this.game.numbers;
+    let numbers = this.game.currentMove;
     let dimension = this.game.dimension;
     for (let index = 0; index < numbers.length; index++) {
       const number = numbers[index];
