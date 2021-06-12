@@ -1,4 +1,6 @@
+@use "sass:color";
 @import "src/styles/variables";
+
 
 .tile {
   display: flex;
@@ -13,6 +15,11 @@
   margin: 0;
   cursor: pointer;
   user-select: none;
+}
+
+.tile.disabled {
+  cursor: not-allowed;
+  color: color.adjust($tile-color, $alpha: -0.5);
 }
 
 .number {

@@ -7,6 +7,7 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 })
 export class TileComponent {
   @Input() number: number = 0;
+  @Input() disable = false;
   @Output() tileClick = new EventEmitter<number>()
 
   onClick = () => {

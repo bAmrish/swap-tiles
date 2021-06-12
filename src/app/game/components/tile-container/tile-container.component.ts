@@ -7,6 +7,7 @@ import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '
 })
 export class TileContainerComponent implements OnChanges{
   @Input() numbers: number[] = [];
+  @Input() disable = false;
   @Output() onMove = new EventEmitter<number>();
   @Input() dimension: number = 3;
 
