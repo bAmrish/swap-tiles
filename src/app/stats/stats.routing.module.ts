@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {StatsComponent} from './stats.component';
+import {StatsComponent} from './components/stats.component';
 const ROUTES: Routes = [
   {
     path: 'stats',

@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {SharedModule} from '../shared/shared.module';
-import {StatsComponent} from './stats.component';
+import {StatsComponent} from './components/stats.component';
 
 @NgModule({
   declarations: [StatsComponent],

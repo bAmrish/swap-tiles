@@ -4,8 +4,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app.routing.module';
-import {GameModule} from './game/game.module';
-import {GameRoutingModule} from './game/game.routing.module';
+import {PuzzleModule} from './puzzle/puzzle.module';
+import {PuzzleRoutingModule} from './puzzle/puzzle.routing.module';
 import {SharedModule} from './shared/shared.module';
 import {StatsModule} from './stats/stats.module';
 import {StatsRoutingModule} from './stats/stats.routing.module';
@@ -16,7 +16,7 @@ import {StatsRoutingModule} from './stats/stats.routing.module';
   ],
   imports: [
     BrowserModule, BrowserAnimationsModule, SharedModule,
-    GameModule, GameRoutingModule,
+    PuzzleModule, PuzzleRoutingModule,
     StatsModule, StatsRoutingModule,
     AppRoutingModule
   ],

@@ -1,6 +1,6 @@
 import {Timer} from "src/app/shared/timer";
 
-export interface Game {
+export interface Puzzle {
   id: string;
   dimension: number;
   currentMove: number[];

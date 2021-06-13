@@ -4,15 +4,15 @@ import {Component, OnInit} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Timer} from '../../shared/timer';
-import {Game} from '../models/game.model';
+import {Puzzle} from '../models/puzzle.model';
 
 @Component({
   selector: 'app-game',
-  templateUrl: './game.component.html',
-  styleUrls: ['./game.component.scss']
+  templateUrl: './puzzle.component.html',
+  styleUrls: ['./puzzle.component.scss']
 })
-export class GameComponent implements OnInit {
-  game: Game;
+export class PuzzleComponent implements OnInit {
+  puzzle: Puzzle;
   dimensions = [3, 4, 5, 6, 7];
   isLoading = false;
   private DEFAULT_DIMENSION = 4;
@@ -23,55 +23,55 @@ export class GameComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private snacksBar: MatSnackBar) {
-    this.game = this.getNewGame();
+    this.puzzle = this.getNewPuzzle();
   }
 
   ngOnInit() {
     setTimeout(() => {
       this.route.queryParams.subscribe(params => {
         const numbers = this.getNumbersFromQueryString(params['n']);
-        this.newGame(numbers);
+        this.newPuzzle(numbers);
       })
     }, 0)
 
   }
 
-  newGame = (numbers?: number[]) => {
-    this.game = this.getNewGame(numbers);
-    this.setQuery(this.game);
+  newPuzzle = (numbers?: number[]) => {
+    this.puzzle = this.getNewPuzzle(numbers);
+    this.setQuery(this.puzzle);
   }
 
   reset = () => {
-    this.game = this.game || this.getNewGame();
-    this.game.currentMove = this.getNumbers(this.game);
-    this.game.moveHistory = [];
-    this.game.solved = false;
-    this.game.timer = new Timer().start();
-    this.game.redoStack = [];
+    this.puzzle = this.puzzle || this.getNewPuzzle();
+    this.puzzle.currentMove = this.getNumbers(this.puzzle);
+    this.puzzle.moveHistory = [];
+    this.puzzle.solved = false;
+    this.puzzle.timer = new Timer().start();
+    this.puzzle.redoStack = [];
   }
 
   unPause = () => {
-    this.game.paused = false;
-    this.game.timer?.start();
+    this.puzzle.paused = false;
+    this.puzzle.timer?.start();
   }
 
   handleMove = (number: number) => {
-    if (this.game.solved) {
+    if (this.puzzle.solved) {
       return;
     }
-    const numbers = this.game.currentMove.slice(0);
-    const posBlank = numbers.indexOf(this.game.BLANK_TILE);
+    const numbers = this.puzzle.currentMove.slice(0);
+    const posBlank = numbers.indexOf(this.puzzle.BLANK_TILE);
     const posNumber = numbers.indexOf(number);
 
     if (this.canSwap(posNumber, posBlank)) {
       numbers.splice(posBlank, 1, number);
-      numbers.splice(posNumber, 1, this.game.BLANK_TILE);
-      this.addToUndoStack(this.game, this.game.currentMove);
-      this.game.currentMove = numbers;
-      this.game.totalMoves++;
-      this.game.solved = this.isSolved();
-      if (this.game.solved) {
-        this.game.timer?.stop();
+      numbers.splice(posNumber, 1, this.puzzle.BLANK_TILE);
+      this.addToUndoStack(this.puzzle, this.puzzle.currentMove);
+      this.puzzle.currentMove = numbers;
+      this.puzzle.totalMoves++;
+      this.puzzle.solved = this.isSolved(this.puzzle);
+      if (this.puzzle.solved) {
+        this.puzzle.timer?.stop();
         this.snacksBar.open("solved", "x", {
           horizontalPosition: 'center',
           verticalPosition: 'bottom',
@@ -81,32 +81,32 @@ export class GameComponent implements OnInit {
     }
   }
 
-  undo() {
-    const lastMove = this.game.moveHistory.pop();
+  undo = () => {
+    const lastMove = this.puzzle.moveHistory.pop();
 
     if (lastMove) {
-      const currentMove = this.game.currentMove.slice(0);
-      this.game.currentMove = lastMove;
-      this.game.redoStack.push(currentMove);
+      const currentMove = this.puzzle.currentMove.slice(0);
+      this.puzzle.currentMove = lastMove;
+      this.puzzle.redoStack.push(currentMove);
     }
   }
 
-  redo() {
-    const move = this.game.redoStack.pop();
+  redo = () => {
+    const move = this.puzzle.redoStack.pop();
 
     if (move) {
-      const currentMove = this.game.currentMove.slice(0);
-      this.game.currentMove = move;
-      this.game.moveHistory.push(currentMove);
+      const currentMove = this.puzzle.currentMove.slice(0);
+      this.puzzle.currentMove = move;
+      this.puzzle.moveHistory.push(currentMove);
     }
   }
 
-  pause() {
-    this.game.paused = true
-    this.game.timer?.stop();
+  pause = () => {
+    this.puzzle.paused = true
+    this.puzzle.timer?.stop();
   }
 
-  private getNewGame(numbers?: number[]): Game {
+  private getNewPuzzle(numbers?: number[]): Puzzle {
     this.isLoading = true;
     if (numbers && this.isPerfectSquare(numbers.length)) {
       this.dimension = Math.sqrt(numbers.length);
@@ -129,7 +129,7 @@ export class GameComponent implements OnInit {
     };
   }
 
-  private setQuery(game: Game) {
+  private setQuery(game: Puzzle) {
     this.router.navigate(
       [],
       {
@@ -139,19 +139,19 @@ export class GameComponent implements OnInit {
       }).then();
   }
 
-  private addToUndoStack(game: Game, move: number[]) {
-    if (game.moveHistory.length >= this.MAX_UNDO) {
-      game.moveHistory.splice(0, 1);
+  private addToUndoStack(puzzle: Puzzle, move: number[]) {
+    if (puzzle.moveHistory.length >= this.MAX_UNDO) {
+      puzzle.moveHistory.splice(0, 1);
     }
-    game.moveHistory.push(move);
+    puzzle.moveHistory.push(move);
   }
 
   private getId(numbers: number[]): string {
     return numbers.join(",");
   }
 
-  private getNumbers(game: Game): number[] {
-    return game.id.split(",")
+  private getNumbers(puzzle: Puzzle): number[] {
+    return puzzle.id.split(",")
       .map((d: string) => parseInt(d, 10));
   }
 
@@ -188,10 +188,10 @@ export class GameComponent implements OnInit {
     }
   }
 
-  private isSolved() {
+  private isSolved(puzzle: Puzzle) {
     let solved = true;
-    let numbers = this.game.currentMove;
-    let dimension = this.game.dimension;
+    let numbers = puzzle.currentMove;
+    let dimension = puzzle.dimension;
     for (let index = 0; index < numbers.length; index++) {
       const number = numbers[index];
       const totalTiles = dimension * dimension;
@@ -207,7 +207,7 @@ export class GameComponent implements OnInit {
   }
 
   private canSwap(posNumber: number, posBlank: number): boolean {
-    return this.game.neighbours[posNumber].indexOf(posBlank) != -1;
+    return this.puzzle.neighbours[posNumber].indexOf(posBlank) != -1;
   }
 
   private findNeighbours(d: number): Record<number, number[]> {
