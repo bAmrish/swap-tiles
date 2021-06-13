@@ -14,7 +14,8 @@ import {Game} from '../models/game.model';
 export class GameComponent implements OnInit {
   game: Game;
   dimensions = [3, 4, 5, 6, 7];
-  private DEFAULT_DIMENSION = 3;
+  isLoading = false;
+  private DEFAULT_DIMENSION = 4;
   dimension = this.DEFAULT_DIMENSION;
   private MAX_UNDO = 100;
 
@@ -106,13 +107,13 @@ export class GameComponent implements OnInit {
   }
 
   private getNewGame(numbers?: number[]): Game {
-
+    this.isLoading = true;
     if (numbers && this.isPerfectSquare(numbers.length)) {
       this.dimension = Math.sqrt(numbers.length);
     } else {
-      numbers = this.getRandomNumbers(this.dimension * this.dimension);
+      numbers = this.generatePuzzle(this.dimension * this.dimension);
     }
-
+    this.isLoading = false;
     return {
       id: this.getId(numbers),
       dimension: this.dimension,
@@ -234,20 +235,77 @@ export class GameComponent implements OnInit {
     return allNeighbours;
   }
 
-  private getRandomNumbers(length: number): number [] {
-    const startNumbers = [...new Array(length)].map((_, i) => i + 1);
-    const numbers: number[] = [];
+  private generatePuzzle(length: number): number [] {
+    let solvable = false;
 
-    while (startNumbers.length != 0) {
-      const pick = Math.random() * startNumbers.length;
-      const n = startNumbers.splice(pick, 1);
-      numbers.push(n[0])
+    const MAX_ITERATIONS = 1000;
+    let numbers = [];
+    let iterations = 0;
+    while (!solvable) {
+      numbers = [];
+      const startNumbers = [...new Array(length)].map((_, i) => i + 1);
+      while (startNumbers.length != 0 && iterations <= MAX_ITERATIONS) {
+        const pick = Math.random() * startNumbers.length;
+        const n = startNumbers.splice(pick, 1);
+        numbers.push(n[0])
+      }
+      solvable = this.isSolvable(numbers, Math.sqrt(length))
+      iterations++;
     }
-
     return numbers;
   }
 
   private isPerfectSquare(n: number) {
     return n && n > 0 && Math.sqrt(n) % 1 === 0;
+  }
+
+  private isSolvable(numbers: number[], dimension: number): boolean {
+    const inversion = this.calculateInversions(numbers, dimension);
+    //If N is odd, then puzzle instance is solvable if number of inversions is even in the input state.
+    if (dimension % 2 != 0) {
+      return inversion % 2 == 0
+    }
+
+    const indexOfBlankTile = numbers.indexOf(dimension * dimension);
+    const row = Math.floor(indexOfBlankTile / dimension);
+    const rowFromBottom = (dimension - row)
+
+    // If N is even, puzzle instance is solvable if
+    //  the blank is on an even row counting from the bottom (second-last, fourth-last, etc.) and number of inversions is odd.
+    //  the blank is on an odd row counting from the bottom (last, third-last, fifth-last, etc.) and number of inversions is even.
+    if (rowFromBottom % 2 === 0 && inversion % 2 !== 0) {
+      return true;
+    }
+
+    // noinspection RedundantIfStatementJS
+    if (rowFromBottom % 2 !== 0 && inversion % 2 === 0) {
+      return true
+    }
+
+    //For all other cases, the puzzle instance is not solvable.
+    return false;
+  }
+
+  /**
+   * What is an inversion here?
+   * If we assume the tiles written out in a single row (1D Array) instead of being spread in N-rows (2D Array),
+   * a pair of tiles (a, b) form an inversion if a appears before b but a > b
+   * @param numbers
+   * @param dimension
+   * @private
+   */
+  private calculateInversions(numbers: number[], dimension: number): number {
+    const indexOfBlankTile = numbers.indexOf(dimension * dimension);
+    const nums = numbers.slice(0)
+    nums.splice(indexOfBlankTile, 1);
+    let inv = 0;
+    for (let i = 0; i < nums.length; i++) {
+      for (let j = i + 1; j < nums.length; j++) {
+        if (nums[i] > nums[j]) {
+          inv++;
+        }
+      }
+    }
+    return inv;
   }
 }

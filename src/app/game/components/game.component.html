@@ -40,18 +40,6 @@
             </div>
 
             <div *ngIf="!game.solved" class="nav-item">
-                <button (click)="pause()"
-                        *ngIf="!game.paused"
-                        mat-icon-button
-                        matTooltip="Pause the timer">
-                    <mat-icon>pause</mat-icon>
-                </button>
-                <button (click)="unPause()"
-                        *ngIf="game.paused"
-                        mat-icon-button
-                        matTooltip="start the timer">
-                    <mat-icon>play_arrow</mat-icon>
-                </button>
                 <button (click)="undo()"
                         [disabled]="game.moveHistory.length <=0"
                         mat-icon-button
@@ -64,6 +52,19 @@
                         matTooltip="Redo last move.">
                     <mat-icon>redo</mat-icon>
                 </button>
+                <button (click)="pause()"
+                        *ngIf="!game.paused"
+                        mat-icon-button
+                        matTooltip="Pause the timer">
+                    <mat-icon>pause</mat-icon>
+                </button>
+                <button (click)="unPause()"
+                        *ngIf="game.paused"
+                        mat-icon-button
+                        matTooltip="start the timer">
+                    <mat-icon>play_arrow</mat-icon>
+                </button>
+
             </div>
 
             <div class="nav-item">
@@ -83,6 +84,7 @@
             <button (click)="newGame()" mat-button> New Game</button>
         </div>
         <app-tile-container
+                *ngIf="game.currentMove.length != 0 && !isLoading"
                 (onMove)="handleMove($event)"
                 (onUnPause)="unPause()"
                 [dimension]=dimension
@@ -90,6 +92,8 @@
                 [numbers]="game.currentMove"
                 [paused]="game.paused">
         </app-tile-container>
+        <div *ngIf="game.currentMove.length == 0 && !isLoading">Unable to generate a puzzle!</div>
+        <mat-progress-spinner mode="indeterminate" *ngIf="isLoading"></mat-progress-spinner>
     </div>
     <div class="hidden">
         <div><h3>Moves</h3></div>
