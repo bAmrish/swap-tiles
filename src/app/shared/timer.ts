@@ -1,8 +1,12 @@
 export class Timer {
-  private time = 0;
   public displayTime = "";
+  private time = 0;
   private interval: any = null;
   private running = false;
+
+  private static twoDigit(n: number) {
+    return n.toString().length < 2 ? "0" + n : n;
+  }
 
   public start(): Timer {
     if (!this.running) {
@@ -21,6 +25,10 @@ export class Timer {
     return this;
   }
 
+  public getTime() {
+    return this.time;
+  }
+
   private tick = (): Timer => {
     this.time += 1;
     this.displayTime = this.getDisplayTime();
@@ -34,9 +42,5 @@ export class Timer {
     const s = (t - h * 3600 - m * 60)
 
     return `${Timer.twoDigit(h)}:${Timer.twoDigit(m)}:${Timer.twoDigit(s)}`;
-  }
-
-  private static twoDigit(n: number) {
-    return n.toString().length < 2 ? "0" + n : n;
   }
 }

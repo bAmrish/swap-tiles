@@ -10,6 +10,11 @@ export interface Puzzle {
   solved: boolean;
   totalMoves: number;
   BLANK_TILE: number;
-  timer?: Timer;
+  timer: Timer;
   paused: boolean;
+  resetCounter: number;
+  solveTime?: number;
+  lastResetAt?: Date;
+  createdAt: Date;
+  solvedAt?: Date;
 }

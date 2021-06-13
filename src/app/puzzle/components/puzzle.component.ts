@@ -48,11 +48,8 @@ export class PuzzleComponent implements OnInit {
     this.puzzle.solved = false;
     this.puzzle.timer = new Timer().start();
     this.puzzle.redoStack = [];
-  }
-
-  unPause = () => {
-    this.puzzle.paused = false;
-    this.puzzle.timer?.start();
+    this.puzzle.resetCounter += 1;
+    this.puzzle.lastResetAt = new Date();
   }
 
   handleMove = (number: number) => {
@@ -72,6 +69,8 @@ export class PuzzleComponent implements OnInit {
       this.puzzle.solved = this.isSolved(this.puzzle);
       if (this.puzzle.solved) {
         this.puzzle.timer?.stop();
+        this.puzzle.solvedAt = new Date();
+        this.puzzle.solveTime = this.puzzle.timer.getTime();
         this.snacksBar.open("solved", "x", {
           horizontalPosition: 'center',
           verticalPosition: 'bottom',
@@ -79,6 +78,16 @@ export class PuzzleComponent implements OnInit {
         });
       }
     }
+  }
+
+  pause = () => {
+    this.puzzle.paused = true
+    this.puzzle.timer?.stop();
+  }
+
+  unPause = () => {
+    this.puzzle.paused = false;
+    this.puzzle.timer?.start();
   }
 
   undo = () => {
@@ -101,11 +110,6 @@ export class PuzzleComponent implements OnInit {
     }
   }
 
-  pause = () => {
-    this.puzzle.paused = true
-    this.puzzle.timer?.stop();
-  }
-
   private getNewPuzzle(numbers?: number[]): Puzzle {
     this.isLoading = true;
     if (numbers && this.isPerfectSquare(numbers.length)) {
@@ -125,7 +129,9 @@ export class PuzzleComponent implements OnInit {
       paused: false,
       solved: false,
       BLANK_TILE: this.dimension * this.dimension,
-      timer: new Timer().start()
+      timer: new Timer().start(),
+      resetCounter: 0,
+      createdAt: new Date()
     };
   }
 
