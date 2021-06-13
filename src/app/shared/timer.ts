@@ -4,6 +4,13 @@ export class Timer {
   private interval: any = null;
   private running = false;
 
+  private tickCallbacks: (()=>void)[] = [];
+
+
+  constructor(startTime?: number) {
+    this.time = startTime || 0;
+  }
+
   private static twoDigit(n: number) {
     return n.toString().length < 2 ? "0" + n : n;
   }
@@ -32,9 +39,16 @@ export class Timer {
   private tick = (): Timer => {
     this.time += 1;
     this.displayTime = this.getDisplayTime();
+
+    this.tickCallbacks.forEach(f => f());
+
     return this;
   }
 
+  public onTick(callback: () => void): Timer {
+    this.tickCallbacks.push(callback);
+    return this;
+  }
   private getDisplayTime(): string {
     const t = this.time;
     const h = Math.floor(t / 3600);

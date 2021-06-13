@@ -1,105 +1,107 @@
 <div class="game">
-    <div class="navbar navbar-light bg-light navbar-expand-sm">
-        <div class="container-fluid">
-            <button class="navbar-toggler" data-bs-target="#navbarSupportedContent"
-                    data-bs-toggle="collapse" type="button"
-            >
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <button (click)="newPuzzle()" color="primary"
-                                mat-flat-button
-                                matTooltip="Start a new puzzle">
-                            New Puzzle
-                        </button>
-                    </li>
-                    <li class="nav-item">
-                        <button (click)="reset()"
-                                mat-flat-button
-                                matTooltip="Reset Current puzzle">
-                            Reset
-                        </button>
-                    </li>
-                    <li class="nav-item">
-                        <mat-form-field class="dimension-selector">
-                            <mat-select
-                                    (selectionChange)="newPuzzle()"
-                                    [(ngModel)]="dimension" name="dimension">
-                                <mat-option
-                                        *ngFor="let dim of dimensions"
-                                        [value]="dim"
-                                        class="dimension-radio">
-                                    {{dim}} x {{dim}}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </li>
-                </ul>
-            </div>
-
-            <div *ngIf="!puzzle.solved" class="nav-item">
-                <button (click)="undo()"
-                        [disabled]="puzzle.moveHistory.length <=0"
-                        mat-icon-button
-                        matTooltip="Undo last move.">
-                    <mat-icon>undo</mat-icon>
+    <ng-template [ngIf]="puzzle">
+        <div class="navbar navbar-light bg-light navbar-expand-sm">
+            <div class="container-fluid">
+                <button class="navbar-toggler" data-bs-target="#navbarSupportedContent"
+                        data-bs-toggle="collapse" type="button"
+                >
+                    <span class="navbar-toggler-icon"></span>
                 </button>
-                <button (click)="redo()"
-                        [disabled]="puzzle.redoStack.length <=0"
-                        mat-icon-button
-                        matTooltip="Redo last move.">
-                    <mat-icon>redo</mat-icon>
-                </button>
-                <button (click)="pause()"
-                        *ngIf="!puzzle.paused"
-                        mat-icon-button
-                        matTooltip="Pause the timer">
-                    <mat-icon>pause</mat-icon>
-                </button>
-                <button (click)="unPause()"
-                        *ngIf="puzzle.paused"
-                        mat-icon-button
-                        matTooltip="start the timer">
-                    <mat-icon>play_arrow</mat-icon>
-                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <button (click)="newPuzzle()" color="primary"
+                                    mat-flat-button
+                                    matTooltip="Start a new puzzle">
+                                New Puzzle
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button (click)="reset()"
+                                    mat-flat-button
+                                    matTooltip="Reset Current puzzle">
+                                Reset
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <mat-form-field class="dimension-selector">
+                                <mat-select
+                                        (selectionChange)="newPuzzle()"
+                                        [(ngModel)]="dimension" name="dimension">
+                                    <mat-option
+                                            *ngFor="let dim of dimensions"
+                                            [value]="dim"
+                                            class="dimension-radio">
+                                        {{dim}} x {{dim}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </li>
+                    </ul>
+                </div>
+
+                <div *ngIf="!puzzle.solved" class="nav-item">
+                    <button (click)="undo()"
+                            [disabled]="puzzle.moveHistory.length <=0"
+                            mat-icon-button
+                            matTooltip="Undo last move.">
+                        <mat-icon>undo</mat-icon>
+                    </button>
+                    <button (click)="redo()"
+                            [disabled]="puzzle.redoStack.length <=0"
+                            mat-icon-button
+                            matTooltip="Redo last move.">
+                        <mat-icon>redo</mat-icon>
+                    </button>
+                    <button (click)="pause()"
+                            *ngIf="!puzzle.paused"
+                            mat-icon-button
+                            matTooltip="Pause the timer">
+                        <mat-icon>pause</mat-icon>
+                    </button>
+                    <button (click)="unPause()"
+                            *ngIf="puzzle.paused"
+                            mat-icon-button
+                            matTooltip="start the timer">
+                        <mat-icon>play_arrow</mat-icon>
+                    </button>
+
+                </div>
+
+                <div class="nav-item">
+                    <div *ngIf="timer != null" class="timer toolbar-item">{{timer.displayTime}}</div>
+                </div>
+                <div class="nav-item">
+                    <div class="navbar-text moves toolbar-item"> Moves: {{puzzle.totalMoves}} </div>
+                </div>
 
             </div>
-
-            <div class="nav-item">
-                <div *ngIf="puzzle.timer != null" class="timer toolbar-item">{{puzzle.timer.displayTime}}</div>
-            </div>
-            <div class="nav-item">
-                <div class="navbar-text moves toolbar-item"> Moves: {{puzzle.totalMoves}} </div>
-            </div>
-
         </div>
-    </div>
 
-    <div class="game-container game-container-{{dimension}}">
-        <div *ngIf="puzzle.solved" class="solved-message">
-            Solved in {{puzzle.totalMoves}} moves. Good Job!
-            <br> Start a
-            <button (click)="newPuzzle()" mat-button> New Puzzle</button>
+        <div class="game-container game-container-{{dimension}}">
+            <div *ngIf="puzzle.solved" class="solved-message">
+                Solved in {{puzzle.totalMoves}} moves. Good Job!
+                <br> Start a
+                <button (click)="newPuzzle()" mat-button> New Puzzle</button>
+            </div>
+            <app-tile-container
+                    *ngIf="puzzle.currentMove.length != 0 && !isLoading"
+                    (onMove)="handleMove($event)"
+                    (onUnPause)="unPause()"
+                    [dimension]=dimension
+                    [disable]="puzzle.solved"
+                    [numbers]="puzzle.currentMove"
+                    [paused]="puzzle.paused">
+            </app-tile-container>
+            <div *ngIf="puzzle.currentMove.length == 0 && !isLoading">Unable to generate a puzzle!</div>
+            <mat-progress-spinner mode="indeterminate" *ngIf="isLoading"></mat-progress-spinner>
         </div>
-        <app-tile-container
-                *ngIf="puzzle.currentMove.length != 0 && !isLoading"
-                (onMove)="handleMove($event)"
-                (onUnPause)="unPause()"
-                [dimension]=dimension
-                [disable]="puzzle.solved"
-                [numbers]="puzzle.currentMove"
-                [paused]="puzzle.paused">
-        </app-tile-container>
-        <div *ngIf="puzzle.currentMove.length == 0 && !isLoading">Unable to generate a puzzle!</div>
-        <mat-progress-spinner mode="indeterminate" *ngIf="isLoading"></mat-progress-spinner>
-    </div>
-    <div class="hidden">
-        <div><h3>Moves</h3></div>
-        <div *ngFor="let move of puzzle.moveHistory; let i = index">
-            {{i + 1}}: {{move}}
+        <div class="hidden">
+            <div><h3>Moves</h3></div>
+            <div *ngFor="let move of puzzle.moveHistory; let i = index">
+                {{i + 1}}: {{move}}
+            </div>
         </div>
-    </div>
+    </ng-template>
 </div>
 

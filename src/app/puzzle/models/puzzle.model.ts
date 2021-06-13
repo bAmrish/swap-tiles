@@ -1,5 +1,3 @@
-import {Timer} from "src/app/shared/timer";
-
 export interface Puzzle {
   id: string;
   dimension: number;
@@ -10,7 +8,7 @@ export interface Puzzle {
   solved: boolean;
   totalMoves: number;
   BLANK_TILE: number;
-  timer: Timer;
+  currentTime: number;
   paused: boolean;
   resetCounter: number;
   solveTime?: number;

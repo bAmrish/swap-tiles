@@ -5,6 +5,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Timer} from '../../shared/timer';
 import {Puzzle} from '../models/puzzle.model';
+import {PuzzleStorageService} from '../services/puzzle-storage.service.';
 
 @Component({
   selector: 'app-game',
@@ -12,44 +13,60 @@ import {Puzzle} from '../models/puzzle.model';
   styleUrls: ['./puzzle.component.scss']
 })
 export class PuzzleComponent implements OnInit {
+  // @ts-ignore
   puzzle: Puzzle;
   dimensions = [3, 4, 5, 6, 7];
   isLoading = false;
+  public timer: Timer | null = null;
   private DEFAULT_DIMENSION = 4;
   dimension = this.DEFAULT_DIMENSION;
   private MAX_UNDO = 100;
 
   constructor(
+    private storageService: PuzzleStorageService,
     private route: ActivatedRoute,
     private router: Router,
     private snacksBar: MatSnackBar) {
-    this.puzzle = this.getNewPuzzle();
   }
 
   ngOnInit() {
     setTimeout(() => {
       this.route.queryParams.subscribe(params => {
         const numbers = this.getNumbersFromQueryString(params['n']);
-        this.newPuzzle(numbers);
+        // We need to wait to start a new puzzle
+        // to give indexDB to initialize.
+        setTimeout(this.newPuzzle, 1, numbers);
       })
-    }, 0)
+    }, 1)
 
   }
 
   newPuzzle = (numbers?: number[]) => {
     this.puzzle = this.getNewPuzzle(numbers);
+    this.timer?.onTick(this.onTick);
+
+    this.save(this.puzzle);
     this.setQuery(this.puzzle);
+  }
+
+  onTick = () => {
+    if (this.timer) {
+      this.puzzle.currentTime = this.timer.getTime();
+    }
   }
 
   reset = () => {
     this.puzzle = this.puzzle || this.getNewPuzzle();
     this.puzzle.currentMove = this.getNumbers(this.puzzle);
     this.puzzle.moveHistory = [];
+    this.puzzle.totalMoves = 0;
     this.puzzle.solved = false;
-    this.puzzle.timer = new Timer().start();
+    this.puzzle.currentTime = 0;
     this.puzzle.redoStack = [];
     this.puzzle.resetCounter += 1;
     this.puzzle.lastResetAt = new Date();
+    this.timer = new Timer().start().onTick(this.onTick);
+    this.save(this.puzzle);
   }
 
   handleMove = (number: number) => {
@@ -68,26 +85,29 @@ export class PuzzleComponent implements OnInit {
       this.puzzle.totalMoves++;
       this.puzzle.solved = this.isSolved(this.puzzle);
       if (this.puzzle.solved) {
-        this.puzzle.timer?.stop();
+        this.timer?.stop();
         this.puzzle.solvedAt = new Date();
-        this.puzzle.solveTime = this.puzzle.timer.getTime();
+        this.puzzle.solveTime = this.timer?.getTime();
         this.snacksBar.open("solved", "x", {
           horizontalPosition: 'center',
           verticalPosition: 'bottom',
           duration: 5 * 1000
         });
       }
+      this.save(this.puzzle);
     }
   }
 
   pause = () => {
     this.puzzle.paused = true
-    this.puzzle.timer?.stop();
+    this.timer?.stop();
+    this.save(this.puzzle);
   }
 
   unPause = () => {
     this.puzzle.paused = false;
-    this.puzzle.timer?.start();
+    this.timer?.start();
+    this.save(this.puzzle);
   }
 
   undo = () => {
@@ -97,6 +117,7 @@ export class PuzzleComponent implements OnInit {
       const currentMove = this.puzzle.currentMove.slice(0);
       this.puzzle.currentMove = lastMove;
       this.puzzle.redoStack.push(currentMove);
+      this.save(this.puzzle);
     }
   }
 
@@ -107,6 +128,7 @@ export class PuzzleComponent implements OnInit {
       const currentMove = this.puzzle.currentMove.slice(0);
       this.puzzle.currentMove = move;
       this.puzzle.moveHistory.push(currentMove);
+      this.save(this.puzzle);
     }
   }
 
@@ -118,6 +140,7 @@ export class PuzzleComponent implements OnInit {
       numbers = this.generatePuzzle(this.dimension * this.dimension);
     }
     this.isLoading = false;
+    this.timer = new Timer().start();
     return {
       id: this.getId(numbers),
       dimension: this.dimension,
@@ -129,7 +152,7 @@ export class PuzzleComponent implements OnInit {
       paused: false,
       solved: false,
       BLANK_TILE: this.dimension * this.dimension,
-      timer: new Timer().start(),
+      currentTime: 0,
       resetCounter: 0,
       createdAt: new Date()
     };
@@ -313,5 +336,9 @@ export class PuzzleComponent implements OnInit {
       }
     }
     return inv;
+  }
+
+  private save(puzzle: Puzzle) {
+    this.storageService.savePuzzle(puzzle);
   }
 }
