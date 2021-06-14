@@ -1,0 +1,66 @@
+<div class="dim-stat-header">
+    Overall Stats
+</div>
+<div class="overall-stats">
+    <div class="dim-stat-row">
+        <div class="mini-card">
+            <div class="title">Total Puzzles</div>
+            <div class="number"> {{overallStats.totalPuzzles}}</div>
+        </div>
+        <div class="mini-card">
+            <div class="title">Total Solved</div>
+            <div class="number"> {{overallStats.totalSolved}}</div>
+        </div>
+        <div class="mini-card">
+            <div class="title">Total Unsolved</div>
+            <div class="number"> {{overallStats.totalUnsolved}}</div>
+        </div>
+        <div *ngIf="overallStats.bestMove" class="mini-card">
+            <div class="title">Best Moves</div>
+            <div class="number"> {{overallStats.bestMove.totalMoves}}</div>
+        </div>
+        <div *ngIf="overallStats.bestTime" class="mini-card">
+            <div class="title">Best Time</div>
+            <div class="number"> {{overallStats.bestTime.solveTime}}</div>
+        </div>
+    </div>
+</div>
+<div class="all-dim-stats">
+    <div *ngFor="let dimStat of dimArray">
+        <mat-divider></mat-divider>
+        <div class="dim-stat-header">
+            Stats for {{dimStat.dim}} x {{dimStat.dim}} puzzles
+        </div>
+        <div class="dim-stat-row">
+            <div class="mini-card">
+                <div class="title">Total Puzzles</div>
+                <div class="number"> {{dimStat.stats.totalPuzzles}}</div>
+            </div>
+            <div class="mini-card">
+                <div class="title">Total Solved</div>
+                <div class="number"> {{dimStat.stats.totalSolved}}</div>
+            </div>
+            <div class="mini-card">
+                <div class="title">Total Unsolved</div>
+                <div class="number"> {{dimStat.stats.totalUnsolved}}</div>
+            </div>
+            <div class="mini-card">
+                <div class="title">Average Moves</div>
+                <div class="number"> {{dimStat.stats.averageMoves}}</div>
+            </div>
+            <div class="mini-card">
+                <div class="title">Best Moves</div>
+                <div class="number"> {{dimStat.stats.bestMove?.totalMoves || 'NA'}}</div>
+            </div>
+            <div class="mini-card">
+                <div class="title">Average Time</div>
+                <div class="number"> {{dimStat.stats?.averageTime}}</div>
+            </div>
+            <div class="mini-card">
+                <div class="title">Best Time</div>
+                <div class="number"> {{dimStat.stats.bestTime?.solveTime || 'NA'}}</div>
+            </div>
+        </div>
+    </div>
+</div>
+

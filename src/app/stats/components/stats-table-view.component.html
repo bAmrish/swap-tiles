@@ -1,0 +1,46 @@
+<div class="table-responsive-md">
+    <table [dataSource]="dimArray" class=" stats-table mat-elevation-z3" mat-table>
+        <!-- Position Column -->
+        <ng-container matColumnDef="size">
+            <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Size</th>
+            <td *matCellDef="let element" class="stats-data-cell" mat-cell>
+                <ng-template [ngIf]="element.dim === -1">
+                    Overall
+                </ng-template>
+                <ng-template [ngIf]="element.dim !== -1">
+                    {{element.dim}} x {{element.dim}}
+                </ng-template>
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="totalPuzzles">
+            <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Puzzles</th>
+            <td *matCellDef="let element" class="stats-data-cell" mat-cell> {{element.stats.totalPuzzles}}</td>
+        </ng-container>
+        <ng-container matColumnDef="totalSolved">
+            <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Solved</th>
+            <td *matCellDef="let element" class="stats-data-cell" mat-cell> {{element.stats.totalSolved}}</td>
+        </ng-container>
+        <ng-container matColumnDef="totalUnsolved">
+            <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Unsolved</th>
+            <td *matCellDef="let element" class="stats-data-cell" mat-cell> {{element.stats.totalUnsolved}}</td>
+        </ng-container>
+        <ng-container matColumnDef="bestTime">
+            <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Best Time</th>
+            <td *matCellDef="let element" class="stats-data-cell" mat-cell> {{element.stats.bestTime?.solveTime || 0}}</td>
+        </ng-container>
+        <ng-container matColumnDef="averageTime">
+            <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Average Time</th>
+            <td *matCellDef="let element" class="stats-data-cell" mat-cell> {{element.stats.averageTime}}</td>
+        </ng-container>
+        <ng-container matColumnDef="bestMoves">
+            <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Best Moves</th>
+            <td *matCellDef="let element" class="stats-data-cell" mat-cell> {{element.stats.bestMove?.totalMoves || 0}}</td>
+        </ng-container>
+        <ng-container matColumnDef="averageMoves">
+            <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Average Time</th>
+            <td *matCellDef="let element" class="stats-data-cell" mat-cell> {{element.stats.averageMoves}}</td>
+        </ng-container>
+        <tr *matHeaderRowDef="displayColumns" mat-header-row></tr>
+        <tr *matRowDef="let row; columns: displayColumns;" mat-row></tr>
+    </table>
+</div>
