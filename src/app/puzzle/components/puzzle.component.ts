@@ -1,6 +1,6 @@
 // noinspection JSMethodCanBeStatic
 
-import {Component, OnInit} from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Timer} from '../../shared/timer';
@@ -61,6 +61,45 @@ export class PuzzleComponent implements OnInit {
     }, 1);
   }
 
+  @HostListener('document:keydown', ['$event'])
+  handleKeyEvents = (event: KeyboardEvent) => {
+    switch (event.key) {
+      case 'ArrowUp':
+        this.handleInverseKeyPressed('up');
+        return false;
+      case 'ArrowDown':
+        this.handleInverseKeyPressed('down');
+        return false;
+      case 'ArrowLeft':
+        this.handleInverseKeyPressed('left');
+        return false;
+      case 'ArrowRight':
+        this.handleInverseKeyPressed('right');
+        return false;
+      case 'p':
+        if(this.puzzle.paused) {
+          this.unPause();
+        } else {
+          this.pause();
+        }
+        return false
+      case 'z':
+        this.undo();
+        return false;
+      case 'r':
+        this.redo();
+        return false;
+      default:
+        console.log(event, event.key)
+        return true;
+    }
+  }
+
+  @HostListener('window:blur')
+  handleWindowBlurEvent = () => {
+    this.pause();
+  }
+
   newPuzzle = (numbers?: number[]) => {
     this.puzzle = this.getNewPuzzle(numbers);
     this.timer?.onTick(this.onTick);
@@ -84,7 +123,11 @@ export class PuzzleComponent implements OnInit {
     this.puzzle.redoStack = [];
     this.puzzle.resetCounter += 1;
     this.puzzle.lastResetAt = new Date();
-    this.timer = new Timer().start().onTick(this.onTick);
+    this.timer = new Timer().onTick(this.onTick);
+    if(!this.puzzle.paused) {
+      this.timer.start();
+    }
+
     this.save(this.puzzle);
   }
 
@@ -149,6 +192,69 @@ export class PuzzleComponent implements OnInit {
       this.puzzle.moveHistory.push(currentMove);
       this.save(this.puzzle);
     }
+  }
+
+  // noinspection JSUnusedLocalSymbols
+  private handleKeyPressed(direction: string) {
+    const BLANK = this.puzzle.BLANK_TILE;
+    const i = this.puzzle.currentMove.indexOf(BLANK);
+    const d = this.puzzle.dimension;
+    const row = Math.floor(i / d);
+    const col = i % d;
+    let pos;
+    switch (direction) {
+      case 'up':
+        if (row === 0) return;
+        pos = ((row - 1) * d) + col;
+        break;
+      case 'down':
+        if (row === d - 1) return;
+        pos = ((row + 1) * d) + col;
+        break;
+      case 'left':
+        if (col === 0) return;
+        pos = (row * d) + col - 1;
+        break;
+      case 'right':
+        if (col === d - 1) return;
+        pos = (row * d) + col + 1;
+        break;
+      default:
+        return;
+    }
+
+    this.handleMove(this.puzzle.currentMove[pos]);
+  }
+
+  private handleInverseKeyPressed(direction: string) {
+    const BLANK = this.puzzle.BLANK_TILE;
+    const i = this.puzzle.currentMove.indexOf(BLANK);
+    const d = this.puzzle.dimension;
+    const row = Math.floor(i / d);
+    const col = i % d;
+    let pos;
+    switch (direction) {
+      case 'up':
+        if (row === d - 1) return;
+        pos = ((row + 1) * d) + col;
+        break;
+      case 'down':
+        if (row === 0) return;
+        pos = ((row - 1) * d) + col;
+        break;
+      case 'left':
+        if (col === d - 1) return;
+        pos = (row * d) + col + 1;
+        break;
+      case 'right':
+        if (col === 0) return;
+        pos = (row * d) + col - 1;
+        break;
+      default:
+        return;
+    }
+
+    this.handleMove(this.puzzle.currentMove[pos]);
   }
 
   private getNewPuzzle(numbers?: number[]): Puzzle {
@@ -361,3 +467,4 @@ export class PuzzleComponent implements OnInit {
     this.storageService.savePuzzle(puzzle);
   }
 }
+
