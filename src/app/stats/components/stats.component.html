@@ -1,9 +1,21 @@
 <div>
+    <div class="navbar navbar-light bg-light">
+        <div class="container-fluid">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <mat-button-toggle-group [(ngModel)]="viewMode">
+                        <mat-button-toggle value="summaryTable-view">Table</mat-button-toggle>
+                        <mat-button-toggle value="card-view">Card</mat-button-toggle>
+                    </mat-button-toggle-group>
+                </li>
+            </ul>
+        </div>
+    </div>
     <ng-template [ngIf]="viewMode==='card-view'">
         <app-stats-card-view [dimArray]="dimArray" [overallStats]="overallStats"></app-stats-card-view>
     </ng-template>
-    <ng-template [ngIf]="viewMode==='table-view'">
-        <app-stats-table-view [dimArray]="dimArray" [overallStats]="overallStats"></app-stats-table-view>
+    <ng-template [ngIf]="viewMode==='summaryTable-view'">
+        <app-stats-table-view [dimArray]="dimArray" [overallStats]="overallStats" [puzzles]="puzzles"></app-stats-table-view>
     </ng-template>
 </div>
 
