@@ -9,7 +9,7 @@ import {StatsService} from '../services/stats.service';
   styleUrls: ['./stats.component.scss']
 })
 export class StatsComponent implements OnInit {
-  viewMode = "table-view";
+  viewMode = "summaryTable-view";
   puzzles: Puzzle[] = [];
   overallStats: Stats = new Stats();
   dimArray: { dim: number, stats: Stats }[] = [];
@@ -44,6 +44,10 @@ export class StatsComponent implements OnInit {
     }
   }
 
+  setView = (viewName: string) => {
+    this.viewMode = viewName;
+  }
+
   // noinspection JSMethodCanBeStatic
   private getStats(puzzles: Puzzle[]): Stats {
     const solvedPuzzles = puzzles.filter(p => p.solved);
@@ -71,10 +75,10 @@ export class StatsComponent implements OnInit {
       )[0];
 
       const totalTime = solvedPuzzles.reduce((total, a) => (a.solveTime || 0) + total, 0);
-      averageTime = Math.round(totalTime/solvedPuzzles.length);
+      averageTime = Math.round(totalTime / solvedPuzzles.length);
 
       const totalMoves = solvedPuzzles.reduce((total, a) => (a.totalMoves || 0) + total, 0);
-      averageMoves = Math.round(totalMoves/solvedPuzzles.length);
+      averageMoves = Math.round(totalMoves / solvedPuzzles.length);
     }
     return {totalPuzzles, totalSolved, totalUnsolved, bestTime, bestMove, averageTime, averageMoves};
   }
