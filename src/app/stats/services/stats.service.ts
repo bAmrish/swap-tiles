@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {Puzzle} from '../../puzzle/models/puzzle.model';
-import {PuzzleStorageService} from '../../puzzle/services/puzzle-storage.service.';
+import {PuzzleStorageService} from '../../puzzle/services/puzzle-storage.service';
 
 @Injectable({providedIn: 'root'})
 export class StatsService{

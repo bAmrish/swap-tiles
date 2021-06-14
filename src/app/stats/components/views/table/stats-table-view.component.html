@@ -5,7 +5,7 @@
             <table #summaryTable [dataSource]="dimArray" class=" stats-table mat-elevation-z3" mat-table>
                 <!-- Position Column -->
                 <ng-container matColumnDef="size">
-                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Size</th>
+                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell>Size</th>
                     <td *matCellDef="let element" class="stats-data-cell" mat-cell>
                         <ng-template [ngIf]="element.dim === -1">
                             Overall
@@ -16,64 +16,82 @@
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="totalPuzzles">
-                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Puzzles</th>
+                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell>Puzzles</th>
                     <td *matCellDef="let element" class="stats-data-cell" mat-cell>
-                        <button mat-button
+                        <button (click)="filter(element.dim, 'total')"
                                 *ngIf="element.dim !== -1"
-                                (click)="filter(element.dim, 'total')">
+                                mat-button>
                             {{element.stats.totalPuzzles}}
                         </button>
-                        <button mat-button
+                        <button (click)="filter('all', 'total')"
                                 *ngIf="element.dim === -1"
-                                (click)="filter('all', 'total')">
+                                mat-button>
                             {{element.stats.totalPuzzles}}
                         </button>
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="totalSolved">
-                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Solved</th>
+                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell>Solved</th>
                     <td *matCellDef="let element" class="stats-data-cell" mat-cell>
-                        <button mat-button
+                        <button (click)="filter(element.dim, 'solved')"
                                 *ngIf="element.dim !== -1"
-                                (click)="filter(element.dim, 'solved')">
+                                mat-button>
                             {{element.stats.totalSolved}}
                         </button>
-                        <button mat-button
+                        <button (click)="filter('all', 'solved')"
                                 *ngIf="element.dim === -1"
-                                (click)="filter('all', 'solved')">
+                                mat-button>
                             {{element.stats.totalSolved}}
                         </button>
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="totalUnsolved">
-                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Unsolved</th>
+                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell>Unsolved</th>
                     <td *matCellDef="let element" class="stats-data-cell" mat-cell>
-                        <button mat-button
+                        <button (click)="filter(element.dim, 'unsolved')"
                                 *ngIf="element.dim !== -1"
-                                (click)="filter(element.dim, 'unsolved')">
+                                mat-button>
                             {{element.stats.totalUnsolved}}
                         </button>
-                        <button mat-button
+                        <button (click)="filter('all', 'unsolved')"
                                 *ngIf="element.dim === -1"
-                                (click)="filter('all', 'unsolved')">
+                                mat-button>
                             {{element.stats.totalUnsolved}}
                         </button>
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="bestTime">
-                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Best Time</th>
-                    <td *matCellDef="let element" class="stats-data-cell" mat-cell> {{element.stats.bestTime?.solveTime || 0}}</td>
+                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell>Best Time</th>
+                    <td *matCellDef="let element" class="stats-data-cell" mat-cell>
+                        <ng-template [ngIf]="element.stats.bestTime">
+                            <a [queryParams]="{'n': element.stats.bestTime.id}" [routerLink]="['/puzzle']" mat-button>
+                                {{element.stats.bestTime.solveTime}}
+                            </a>
+                        </ng-template>
+                        <ng-template [ngIf]="!element.stats.bestTime">
+
+                        </ng-template>
+                    </td>
                 </ng-container>
                 <ng-container matColumnDef="averageTime">
-                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Average Time</th>
+                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell>Average Time</th>
                     <td *matCellDef="let element" class="stats-data-cell" mat-cell> {{element.stats.averageTime}}</td>
                 </ng-container>
                 <ng-container matColumnDef="bestMoves">
-                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Best Moves</th>
-                    <td *matCellDef="let element" class="stats-data-cell" mat-cell> {{element.stats.bestMove?.totalMoves || 0}}</td>
+                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell>Best Moves</th>
+                    <td *matCellDef="let element" class="stats-data-cell" mat-cell>
+                        <ng-template [ngIf]="element.stats.bestMove">
+                            <a [queryParams]="{'n': element.stats.bestMove.id}" [routerLink]="['/puzzle']" mat-button>
+                                {{element.stats.bestMove.totalMoves}}
+                            </a>
+                        </ng-template>
+                        <ng-template [ngIf]="!element.stats.bestMove">
+
+                        </ng-template>
+                    </td>
                 </ng-container>
                 <ng-container matColumnDef="averageMoves">
-                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Average Time</th>
+                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell>Average Time</th>
                     <td *matCellDef="let element" class="stats-data-cell" mat-cell> {{element.stats.averageMoves}}</td>
                 </ng-container>
                 <tr *matHeaderRowDef="summaryColumns" mat-header-row></tr>
@@ -91,7 +109,11 @@
                 </ng-container>
                 <ng-container matColumnDef="id">
                     <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Puzzle</th>
-                    <td *matCellDef="let puzzle" class="stats-data-cell" mat-cell> {{puzzle.id}}</td>
+                    <td *matCellDef="let puzzle" class="stats-data-cell" mat-cell>
+                        <a [queryParams]="{'n': puzzle.id}" [routerLink]="['/puzzle']" color="primary" mat-button>
+                            View
+                        </a>
+                    </td>
                 </ng-container>
                 <ng-container matColumnDef="createdAt">
                     <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Started At</th>

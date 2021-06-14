@@ -9,6 +9,7 @@ export class Timer {
 
   constructor(startTime?: number) {
     this.time = startTime || 0;
+    this.displayTime = this.getDisplayTime();
   }
 
   private static twoDigit(n: number) {

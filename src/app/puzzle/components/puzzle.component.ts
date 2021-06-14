@@ -5,7 +5,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Timer} from '../../shared/timer';
 import {Puzzle} from '../models/puzzle.model';
-import {PuzzleStorageService} from '../services/puzzle-storage.service.';
+import {PuzzleStorageService} from '../services/puzzle-storage.service';
 
 @Component({
   selector: 'app-game',
@@ -32,20 +32,39 @@ export class PuzzleComponent implements OnInit {
   ngOnInit() {
     setTimeout(() => {
       this.route.queryParams.subscribe(params => {
-        const numbers = this.getNumbersFromQueryString(params['n']);
-        // We need to wait to start a new puzzle
-        // to give indexDB to initialize.
-        setTimeout(this.newPuzzle, 1, numbers);
-      })
-    }, 1)
+        const id = params['n'];
+        if (!id) {
+          this.newPuzzle(id);
+          return;
+        }
 
+        setTimeout(() => {
+          this.storageService.get(id).subscribe(puzzle => {
+            if (puzzle) {
+              this.timer = new Timer(puzzle.currentTime);
+              if (!puzzle.solved && !puzzle.paused) {
+                this.timer.start();
+              }
+              this.puzzle = puzzle;
+              this.dimension = puzzle.dimension;
+            } else {
+              const id = this.getNumbersFromQueryString(params['n']);
+              // We need to wait to start a new puzzle
+              // to give indexDB to initialize.
+              this.newPuzzle(id);
+              // setTimeout(this.newPuzzle, 1, id);
+
+            }
+          })
+        }, 100);
+      })
+    }, 1);
   }
 
   newPuzzle = (numbers?: number[]) => {
     this.puzzle = this.getNewPuzzle(numbers);
     this.timer?.onTick(this.onTick);
-
-    this.save(this.puzzle);
+    // this.save(this.puzzle);
     this.setQuery(this.puzzle);
   }
 

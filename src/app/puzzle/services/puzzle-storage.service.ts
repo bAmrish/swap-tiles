@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {Puzzle} from '../models/puzzle.model';
 
 @Injectable({providedIn: 'root'})
@@ -31,6 +31,35 @@ export class PuzzleStorageService {
       .put(puzzle);
   }
 
+  get(id: string): Observable<Puzzle| null> {
+    const subject = new Subject<Puzzle| null>();
+    const puzzleStore = PuzzleStorageService.PUZZLE_STORE;
+    if (!this.db) {
+      console.log('database not initialized');
+      subject.next(null)
+      return subject;
+    }
+    if(!id) {
+      subject.next(null);
+      return subject;
+    }
+    let request = this.db.transaction(puzzleStore)
+      .objectStore(puzzleStore)
+      .get(id);
+
+    request.onsuccess = (event) => {
+      // @ts-ignore
+      subject.next(event.target.result)
+      subject.complete();
+    }
+
+    request.onerror = () => {
+      subject.complete();
+    }
+
+    return subject;
+
+  }
   getAllPuzzles(): Observable<Puzzle[]> {
     const subject = new BehaviorSubject<Puzzle[]>([]);
     const puzzleStore = PuzzleStorageService.PUZZLE_STORE;
@@ -76,3 +105,5 @@ export class PuzzleStorageService {
     }
   }
 }
+
+export class NOT_FOUND {}
