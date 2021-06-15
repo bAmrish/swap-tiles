@@ -21,6 +21,7 @@ export class PuzzleComponent implements OnInit {
   private DEFAULT_DIMENSION = 4;
   dimension = this.DEFAULT_DIMENSION;
   private MAX_UNDO = 100;
+  showHint = false;
 
   constructor(
     private storageService: PuzzleStorageService,
@@ -62,7 +63,7 @@ export class PuzzleComponent implements OnInit {
   }
 
   @HostListener('document:keydown', ['$event'])
-  handleKeyEvents = (event: KeyboardEvent) => {
+  handleKeyDownEvents = (event: KeyboardEvent) => {
     switch (event.key) {
       case 'ArrowUp':
         this.handleInverseKeyPressed('up');
@@ -75,6 +76,9 @@ export class PuzzleComponent implements OnInit {
         return false;
       case 'ArrowRight':
         this.handleInverseKeyPressed('right');
+        return false;
+      case 'Shift':
+        this.showHint = true;
         return false;
       case 'p':
         if(this.puzzle.paused) {
@@ -90,14 +94,23 @@ export class PuzzleComponent implements OnInit {
         this.redo();
         return false;
       default:
-        console.log(event, event.key)
         return true;
     }
   }
 
+  @HostListener('document:keyup', ['$event'])
+  handleUpDownEvents = (event: KeyboardEvent) => {
+    switch (event.key) {
+      case 'Shift':
+        this.showHint = false;
+        return false;
+      default:
+        return true;
+    }
+  }
   @HostListener('window:blur')
   handleWindowBlurEvent = () => {
-    this.pause();
+    // this.pause();
   }
 
   newPuzzle = (numbers?: number[]) => {

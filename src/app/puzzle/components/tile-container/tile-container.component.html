@@ -1,11 +1,17 @@
 <div class="tile-container tile-container-{{dimension}}">
     <div *ngFor="let number of numbers">
-        <ng-template [ngIf]="number==BLANK_TILE">
-            <app-blank-tile></app-blank-tile>
-        </ng-template>
-        <ng-template [ngIf]="number!=BLANK_TILE">
-            <app-tile [number]=number [disable]="disable" [paused]="paused" (tileClick)="onTileClick($event)"></app-tile>
-        </ng-template>
+<!--        <ng-template [ngIf]="number==BLANK_TILE">-->
+<!--            <app-blank-tile></app-blank-tile>-->
+<!--        </ng-template>-->
+<!--        <ng-template>-->
+            <app-picture-tile
+                    [blank]="number===BLANK_TILE"
+                    [dimension]="dimension"
+                    [number]=number
+                    [disable]="disable"
+                    [paused]="paused"
+                    (tileClick)="onTileClick($event)"></app-picture-tile>
+<!--        </ng-template>-->
     </div>
     <div class="overlay" *ngIf="paused">
         <button mat-icon-button class="play-icon" (click)="onPauseClicked()"><mat-icon>play_circle_outline</mat-icon></button>

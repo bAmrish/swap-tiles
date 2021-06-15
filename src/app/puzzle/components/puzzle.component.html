@@ -84,18 +84,24 @@
                 <br> Start a
                 <button (click)="newPuzzle()" mat-button> New Puzzle</button>
             </div>
-            <app-tile-container
-                    *ngIf="puzzle.currentMove.length != 0 && !isLoading"
-                    (onMove)="handleMove($event)"
-                    (onUnPause)="unPause()"
-                    [dimension]=dimension
-                    [disable]="puzzle.solved"
-                    [numbers]="puzzle.currentMove"
-                    [paused]="puzzle.paused">
-            </app-tile-container>
+            <div class="puzzle-tile-container" >
+                <div [class.hidden]="!showHint" class="result-hint"></div>
+                <app-tile-container
+                        *ngIf="puzzle.currentMove.length != 0 && !isLoading"
+                        (onMove)="handleMove($event)"
+                        (onUnPause)="unPause()"
+                        [dimension]=dimension
+                        [disable]="puzzle.solved"
+                        [numbers]="puzzle.currentMove"
+                        [paused]="puzzle.paused">
+                </app-tile-container>
+                <div class="result" *ngIf="puzzle.solved"></div>
+            </div>
             <div *ngIf="puzzle.currentMove.length == 0 && !isLoading">Unable to generate a puzzle!</div>
             <mat-progress-spinner mode="indeterminate" *ngIf="isLoading"></mat-progress-spinner>
+
         </div>
+
         <div class="hidden">
             <div><h3>Moves</h3></div>
             <div *ngFor="let move of puzzle.moveHistory; let i = index">

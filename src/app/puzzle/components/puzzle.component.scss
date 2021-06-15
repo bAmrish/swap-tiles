@@ -4,13 +4,14 @@
 
 $dims: 3, 4, 5, 6, 7, 8, 9, 10;
 
-@each $dim in $dims {
-  .game-container-#{$dim} {
-    width: ($dim*$tile-size);
-  }
-}
+//@each $dim in $dims {
+//  .game-container-#{$dim} {
+//    width: ($dim*$tile-size);
+//  }
+//}
 .game-container {
   margin: 10px auto;
+  width: $container-width;
 }
 
 .dimension-selector {
@@ -49,8 +50,24 @@ $dims: 3, 4, 5, 6, 7, 8, 9, 10;
   padding: 5px 10px;
   border: 1px #ccc solid;
   border-radius: 5px;
-
 }
+
+.puzzle-tile-container {
+  position: relative;
+}
+
+.result, .result-hint {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: $container-width;
+  height: $container-width;
+  z-index: 100;
+  background: url($puzzle-image) no-repeat;
+  background-size: $container-width $container-width;
+  filter: alpha(Opacity=30);
+}
+
 ::ng-deep .dimension-selector .mat-form-field-underline,
 ::ng-deep .dimension-selector .mat-form-field-underline:hover{
   display: none !important;
