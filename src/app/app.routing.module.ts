@@ -4,7 +4,7 @@ import {RouterModule, Routes} from '@angular/router';
 const ROUTES: Routes = [
   {
     path: '',
-    redirectTo: 'puzzle',
+    redirectTo: 'puzzle/numeric',
     pathMatch: 'full'
   }
 ];

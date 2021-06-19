@@ -10,7 +10,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <button (click)="newPuzzle(type)" color="primary"
+                            <button (click)="newPuzzle()" color="primary"
                                     mat-flat-button
                                     matTooltip="Start a new puzzle">
                                 New Puzzle
@@ -26,7 +26,7 @@
                         <li class="nav-item">
                             <mat-form-field class="dimension-selector">
                                 <mat-select
-                                        (selectionChange)="newPuzzle(type)"
+                                        (selectionChange)="newPuzzle()"
                                         [(ngModel)]="dimension" name="dimension">
                                     <mat-option
                                             *ngFor="let dim of dimensions"
@@ -82,7 +82,7 @@
             <div *ngIf="puzzle.solved" class="solved-message">
                 Solved in {{puzzle.totalMoves}} moves. Good Job!
                 <br> Start a
-                <button (click)="newPuzzle(type)" mat-button> New Puzzle</button>
+                <button (click)="newPuzzle()" mat-button> New Puzzle</button>
             </div>
             <div class="puzzle-tile-container" >
                 <div [class.hidden]="!showHint && type === 'numeric'" class="result-hint"></div>

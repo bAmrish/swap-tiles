@@ -1,5 +1,6 @@
 export interface Puzzle {
   id: string;
+  type: PuzzleType;
   dimension: number;
   currentMove: number[];
   neighbours: Record<number, number[]>;
@@ -15,9 +16,7 @@ export interface Puzzle {
   lastResetAt?: Date;
   createdAt: Date;
   solvedAt?: Date;
-  type: PuzzleType;
-  group?: string;
-  order?: number;
+  picture?: string;
 }
 
 export type PuzzleType = 'numeric' | 'picture';
