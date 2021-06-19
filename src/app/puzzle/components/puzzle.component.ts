@@ -4,7 +4,7 @@ import {Component, HostListener, OnInit} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Timer} from '../../shared/timer';
-import {Puzzle} from '../models/puzzle.model';
+import {Puzzle, PuzzleType} from '../models/puzzle.model';
 import {PuzzleStorageService} from '../services/puzzle-storage.service';
 
 @Component({
@@ -13,15 +13,19 @@ import {PuzzleStorageService} from '../services/puzzle-storage.service';
   styleUrls: ['./puzzle.component.scss']
 })
 export class PuzzleComponent implements OnInit {
+
   // @ts-ignore
   puzzle: Puzzle;
   dimensions = [3, 4, 5, 6, 7];
   isLoading = false;
   public timer: Timer | null = null;
+  showHint = false;
+  type: PuzzleType = 'numeric';
+  group?: string;
+  order?: number;
   private DEFAULT_DIMENSION = 4;
   dimension = this.DEFAULT_DIMENSION;
   private MAX_UNDO = 100;
-  showHint = false;
 
   constructor(
     private storageService: PuzzleStorageService,
@@ -35,24 +39,27 @@ export class PuzzleComponent implements OnInit {
       this.route.queryParams.subscribe(params => {
         const id = params['n'];
         if (!id) {
-          this.newPuzzle(id);
+          this.newPuzzle('numeric', id);
           return;
         }
 
         setTimeout(() => {
           this.storageService.get(id).subscribe(puzzle => {
-            if (puzzle) {
+            if (puzzle && puzzle.type) {
               this.timer = new Timer(puzzle.currentTime);
               if (!puzzle.solved && !puzzle.paused) {
                 this.timer.start();
               }
               this.puzzle = puzzle;
               this.dimension = puzzle.dimension;
+              this.type = puzzle.type;
+              this.group = puzzle.group;
+              this.order = puzzle.order;
             } else {
-              const id = this.getNumbersFromQueryString(params['n']);
+              const [type, numbers, group, order] = this.getPartsFromQueryString(params['n']);
               // We need to wait to start a new puzzle
               // to give indexDB to initialize.
-              this.newPuzzle(id);
+              this.newPuzzle(type, numbers, group, order);
               // setTimeout(this.newPuzzle, 1, id);
 
             }
@@ -81,7 +88,7 @@ export class PuzzleComponent implements OnInit {
         this.showHint = true;
         return false;
       case 'p':
-        if(this.puzzle.paused) {
+        if (this.puzzle.paused) {
           this.unPause();
         } else {
           this.pause();
@@ -108,15 +115,15 @@ export class PuzzleComponent implements OnInit {
         return true;
     }
   }
+
   @HostListener('window:blur')
   handleWindowBlurEvent = () => {
     // this.pause();
   }
 
-  newPuzzle = (numbers?: number[]) => {
-    this.puzzle = this.getNewPuzzle(numbers);
+  newPuzzle = (type: PuzzleType, numbers?: number[], group?: string, order?: number) => {
+    this.puzzle = this.getNewPuzzle(this.type, numbers, group, order);
     this.timer?.onTick(this.onTick);
-    // this.save(this.puzzle);
     this.setQuery(this.puzzle);
   }
 
@@ -127,7 +134,7 @@ export class PuzzleComponent implements OnInit {
   }
 
   reset = () => {
-    this.puzzle = this.puzzle || this.getNewPuzzle();
+    // this.puzzle = this.puzzle || this.getNewPuzzle();
     this.puzzle.currentMove = this.getNumbers(this.puzzle);
     this.puzzle.moveHistory = [];
     this.puzzle.totalMoves = 0;
@@ -137,7 +144,7 @@ export class PuzzleComponent implements OnInit {
     this.puzzle.resetCounter += 1;
     this.puzzle.lastResetAt = new Date();
     this.timer = new Timer().onTick(this.onTick);
-    if(!this.puzzle.paused) {
+    if (!this.puzzle.paused) {
       this.timer.start();
     }
 
@@ -270,7 +277,7 @@ export class PuzzleComponent implements OnInit {
     this.handleMove(this.puzzle.currentMove[pos]);
   }
 
-  private getNewPuzzle(numbers?: number[]): Puzzle {
+  private getNewPuzzle(type: PuzzleType, numbers?: number[], group?: string, order?: number): Puzzle {
     this.isLoading = true;
     if (numbers && this.isPerfectSquare(numbers.length)) {
       this.dimension = Math.sqrt(numbers.length);
@@ -279,8 +286,8 @@ export class PuzzleComponent implements OnInit {
     }
     this.isLoading = false;
     this.timer = new Timer().start();
-    return {
-      id: this.getId(numbers),
+    const puzzle = {
+      id: '',
       dimension: this.dimension,
       currentMove: numbers.slice(0),
       moveHistory: [],
@@ -292,16 +299,19 @@ export class PuzzleComponent implements OnInit {
       BLANK_TILE: this.dimension * this.dimension,
       currentTime: 0,
       resetCounter: 0,
-      createdAt: new Date()
+      createdAt: new Date(),
+      type, group, order
     };
+    puzzle.id = this.getId(puzzle);
+    return puzzle
   }
 
-  private setQuery(game: Puzzle) {
+  private setQuery(puzzle: Puzzle) {
     this.router.navigate(
       [],
       {
         relativeTo: this.route,
-        queryParams: {n: game.id},
+        queryParams: {type: puzzle.type || 'numeric', order: puzzle.order, n: puzzle.id},
         queryParamsHandling: 'merge' // remove to replace all query params by provided
       }).then();
   }
@@ -313,46 +323,83 @@ export class PuzzleComponent implements OnInit {
     puzzle.moveHistory.push(move);
   }
 
-  private getId(numbers: number[]): string {
-    return numbers.join(",");
+  private getId(puzzle: Puzzle): string {
+    const id = puzzle.type + '|' + puzzle.currentMove.slice(0).join(',');
+    if (puzzle.type == 'picture') {
+      return `${id}|${puzzle.group}|${puzzle.order}`
+    }
+    return id;
   }
 
   private getNumbers(puzzle: Puzzle): number[] {
-    return puzzle.id.split(",")
+    const parts = puzzle.id.split('|');
+    return parts[1].split(",")
       .map((d: string) => parseInt(d, 10));
   }
 
-  private getNumbersFromQueryString(data: string): number[] {
-    let isValid = true;
-    let dimension = this.DEFAULT_DIMENSION;
+  private getPartsFromQueryString(query: string): [PuzzleType, number[], string | undefined, number | undefined] {
     let numbers: number[] = [];
-    if (data) {
-      numbers = data.split(",")
+    let type: PuzzleType = 'numeric';
+    let group: string | undefined;
+    let order: number | undefined;
+
+    const isValid = this.isQueryStringValid(query);
+
+    if (isValid) {
+      const parts = query.split('|');
+      // @ts-ignore
+      type = parts[0];
+      numbers = parts[1].split(",")
         .map((d: string) => parseInt(d, 10))
         .filter((c: number) => !isNaN(c));
-
-      const sqrt = Math.floor(Math.sqrt(numbers.length));
-
-      if (sqrt * sqrt === numbers.length) { // its a perfect square
-        dimension = sqrt;
-
-        for (let i = 1; i <= dimension; i++) {
-          if (numbers.indexOf(i) == -1) {
-            isValid = false;
-            break;
-          }
-        }
-      } else {
-        isValid = false;
+      if (parts.length === 4) {
+        group = parts[2];
+        order = parseInt(parts[3]);
       }
-    } else {
-      isValid = false;
     }
-    if (isValid) {
-      return numbers;
-    } else {
-      return [];
+    return [type, numbers, group, order]
+  }
+
+  private isQueryStringValid(query: string): boolean {
+    if (!query) {
+      return false;
     }
+    const parts = query.split('|');
+
+    if (parts.length !== 2 && parts.length !== 4) {
+      return false
+    }
+    if (parts.length === 2 && parts[0] !== 'numeric') {
+      return false;
+    }
+
+    if (parts.length === 4 && (parts[0] !== 'picture' || !parts[2] || !parts[3])) {
+      return false;
+    }
+
+    if (parts.length === 4) {
+      const order = parts[3];
+      if (isNaN(parseInt(order))) {
+        return false
+      }
+    }
+
+    const numbers = parts[1].split(",")
+      .map((d: string) => parseInt(d, 10))
+      .filter((c: number) => !isNaN(c));
+
+    const dimension = Math.floor(Math.sqrt(numbers.length));
+    if (dimension * dimension !== numbers.length) { // its not perfect square
+      return false;
+    }
+
+    for (let i = 1; i <= dimension; i++) {
+      if (numbers.indexOf(i) === -1) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   private isSolved(puzzle: Puzzle) {

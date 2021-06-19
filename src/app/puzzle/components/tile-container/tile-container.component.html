@@ -1,20 +1,18 @@
-<div class="tile-container tile-container-{{dimension}}">
-    <div *ngFor="let number of numbers">
-<!--        <ng-template [ngIf]="number==BLANK_TILE">-->
-<!--            <app-blank-tile></app-blank-tile>-->
-<!--        </ng-template>-->
-<!--        <ng-template>-->
-            <app-picture-tile
-                    [blank]="number===BLANK_TILE"
-                    [dimension]="dimension"
-                    [number]=number
-                    [disable]="disable"
-                    [paused]="paused"
-                    (tileClick)="onTileClick($event)"></app-picture-tile>
-<!--        </ng-template>-->
+<div class="tile-container tile-container-{{puzzle.dimension}}" *ngIf="puzzle">
+    <div *ngFor="let number of puzzle.currentMove">
+        <app-tile (tileClick)="onTileClick($event)"
+                  [blank]="number===BLANK_TILE"
+                  [dimension]="puzzle.dimension"
+                  [disable]="puzzle.paused"
+                  [number]=number
+                  [paused]="puzzle.paused"
+                  [type]="puzzle.type">
+        </app-tile>
     </div>
-    <div class="overlay" *ngIf="paused">
-        <button mat-icon-button class="play-icon" (click)="onPauseClicked()"><mat-icon>play_circle_outline</mat-icon></button>
+    <div *ngIf="puzzle.paused" class="overlay">
+        <button (click)="onPauseClicked()" class="play-icon" mat-icon-button>
+            <mat-icon>play_circle_outline</mat-icon>
+        </button>
     </div>
 </div>
 

@@ -15,4 +15,9 @@ export interface Puzzle {
   lastResetAt?: Date;
   createdAt: Date;
   solvedAt?: Date;
+  type: PuzzleType;
+  group?: string;
+  order?: number;
 }
+
+export type PuzzleType = 'numeric' | 'picture';

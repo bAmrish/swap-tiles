@@ -1,5 +1,11 @@
-<div class="tile" [class.disabled]="disable" (click)="onClick()">
-    <div class="number">
+<div (click)="onClick()"
+     [ngClass]="{
+        'disabled': disable,
+        'picture': (type === 'picture' && !blank),
+        'numeric': (type==='numeric' && !blank)
+    }"
+     class="tile tile-{{dimension}} bk-{{dimension}}-{{number}}">
+    <div *ngIf="type==='numeric'&& !blank" class="number">
         {{paused ? "?" : number}}
     </div>
 </div>

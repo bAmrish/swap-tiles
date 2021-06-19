@@ -1,13 +1,30 @@
 @use "sass:color";
+@use "sass:math";
+
 @import "src/styles/variables";
 
+$dims: 3, 4, 5, 6, 7;
+
+@each $d in $dims {
+  $w: ($container-width/$d);
+  .tile-#{$d} {
+    width: $w;
+    height: $w;
+  }
+
+  @for $n from 1 through ($d * $d) {
+    $row: math.floor(($n - 1)/$d);
+    $col: ($n - 1) % $d;
+
+    .picture.bk-#{$d}-#{$n} {
+      background-position: $col*$w*(-1) $row*$w*(-1) !important;
+    }
+  }
+}
 
 .tile {
+  position: relative;
   display: flex;
-  background: $tile-background;
-  box-shadow: $tile-box-shadow;
-  width: $tile-size;
-  height: $tile-size;
   align-items: center;
   justify-content: center;
   align-content: center;
@@ -15,6 +32,16 @@
   margin: 0;
   cursor: pointer;
   user-select: none;
+}
+
+.numeric {
+  background: $tile-background;
+  box-shadow: $tile-box-shadow;
+}
+
+.picture {
+  background: url($puzzle-image) no-repeat;
+  background-size: $container-width $container-width;
 }
 
 .tile.disabled {

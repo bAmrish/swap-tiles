@@ -10,7 +10,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <button (click)="newPuzzle()" color="primary"
+                            <button (click)="newPuzzle(type)" color="primary"
                                     mat-flat-button
                                     matTooltip="Start a new puzzle">
                                 New Puzzle
@@ -26,7 +26,7 @@
                         <li class="nav-item">
                             <mat-form-field class="dimension-selector">
                                 <mat-select
-                                        (selectionChange)="newPuzzle()"
+                                        (selectionChange)="newPuzzle(type)"
                                         [(ngModel)]="dimension" name="dimension">
                                     <mat-option
                                             *ngFor="let dim of dimensions"
@@ -82,24 +82,20 @@
             <div *ngIf="puzzle.solved" class="solved-message">
                 Solved in {{puzzle.totalMoves}} moves. Good Job!
                 <br> Start a
-                <button (click)="newPuzzle()" mat-button> New Puzzle</button>
+                <button (click)="newPuzzle(type)" mat-button> New Puzzle</button>
             </div>
             <div class="puzzle-tile-container" >
-                <div [class.hidden]="!showHint" class="result-hint"></div>
+                <div [class.hidden]="!showHint && type === 'numeric'" class="result-hint"></div>
                 <app-tile-container
+                        [puzzle]="puzzle"
                         *ngIf="puzzle.currentMove.length != 0 && !isLoading"
                         (onMove)="handleMove($event)"
-                        (onUnPause)="unPause()"
-                        [dimension]=dimension
-                        [disable]="puzzle.solved"
-                        [numbers]="puzzle.currentMove"
-                        [paused]="puzzle.paused">
+                        (onUnPause)="unPause()">
                 </app-tile-container>
-                <div class="result" *ngIf="puzzle.solved"></div>
+                <div class="result" *ngIf="puzzle.solved && type === 'picture'"></div>
             </div>
             <div *ngIf="puzzle.currentMove.length == 0 && !isLoading">Unable to generate a puzzle!</div>
             <mat-progress-spinner mode="indeterminate" *ngIf="isLoading"></mat-progress-spinner>
-
         </div>
 
         <div class="hidden">
