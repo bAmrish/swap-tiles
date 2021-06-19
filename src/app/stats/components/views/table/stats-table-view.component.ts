@@ -41,7 +41,7 @@ export class StatsTableViewComponent implements OnChanges {
     let dimFilteredPuzzles = this.puzzles.slice(0);
     let filteredPuzzles: Puzzle[];
 
-    if(dim !== 'all') {
+    if (dim !== 'all') {
       const dimension: number = dim;
       dimFilteredPuzzles = this.puzzles.filter(a => a.dimension === dimension);
     }

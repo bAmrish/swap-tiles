@@ -176,7 +176,7 @@ export class NumericPuzzleComponent implements OnInit {
   }
 
   private getFromDb(id: string) {
-    this.storageService.get(id).subscribe(puzzle => {
+    this.storageService.get(this.type, id).subscribe(puzzle => {
       if (!puzzle) {
         const numbers = this.getNumbersFromQuery(id);
         puzzle = this.play.getNewPuzzle(this.type, numbers);
@@ -294,7 +294,7 @@ export class NumericPuzzleComponent implements OnInit {
   }
 
   private save(puzzle: Puzzle) {
-    this.storageService.savePuzzle(puzzle);
+    this.storageService.savePuzzle(this.type, puzzle);
   }
 }
 

@@ -1,26 +1,42 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
-import {Puzzle} from '../models/puzzle.model';
+import {Puzzle, PuzzleType} from '../models/puzzle.model';
 
 @Injectable({providedIn: 'root'})
 export class PuzzleStorageService {
   private static SWAP_TILE_DB = 'swap-tiles-db';
-  private static PUZZLE_STORE = 'puzzles';
-  private static DB_VERSION = 1;
+  private static OLD_PUZZLE_STORE = 'puzzles';
+  private static NUMERIC_STORE = 'numeric';
+  private static PICTURE_STORE = 'picture';
+  private static DB_VERSION = 2;
   private __init__ = false;
 
   // @ts-ignore
   private db: IDBDatabase;
   // @ts-ignore
-  private store: IDBObjectStore;
+  private oldPuzzleStore: IDBObjectStore;
+  // @ts-ignore
+  private numericStore: IDBObjectStore;
+  // @ts-ignore
+  private pictureStore: IDBObjectStore;
 
 
   constructor() {
+    //
     this.openDb();
   }
 
-  savePuzzle(puzzle: Puzzle) {
-    const puzzleStore = PuzzleStorageService.PUZZLE_STORE;
+  savePuzzle(type: PuzzleType, puzzle: Puzzle) {
+    let puzzleStore;
+    switch (type) {
+      case 'numeric':
+        puzzleStore = PuzzleStorageService.NUMERIC_STORE;
+        break;
+      case 'picture':
+        puzzleStore = PuzzleStorageService.PICTURE_STORE;
+        break;
+    }
+
     if (!this.db) {
       console.log('database not initialized');
       return;
@@ -31,15 +47,25 @@ export class PuzzleStorageService {
       .put(puzzle);
   }
 
-  get(id: string): Observable<Puzzle| null> {
-    const subject = new Subject<Puzzle| null>();
-    const puzzleStore = PuzzleStorageService.PUZZLE_STORE;
+  get(type: PuzzleType, id: string): Observable<Puzzle | null> {
+    let puzzleStore;
+    switch (type) {
+      case 'numeric':
+        puzzleStore = PuzzleStorageService.NUMERIC_STORE;
+        break;
+      case 'picture':
+        puzzleStore = PuzzleStorageService.PICTURE_STORE;
+        break;
+    }
+
+    const subject = new Subject<Puzzle | null>();
+
     if (!this.db) {
       console.log('database not initialized');
       subject.next(null)
       return subject;
     }
-    if(!id) {
+    if (!id) {
       subject.next(null);
       return subject;
     }
@@ -60,9 +86,19 @@ export class PuzzleStorageService {
     return subject;
 
   }
-  getAllPuzzles(): Observable<Puzzle[]> {
+
+  getAllPuzzles(type: PuzzleType): Observable<Puzzle[]> {
+    let puzzleStore;
+    switch (type) {
+      case 'numeric':
+        puzzleStore = PuzzleStorageService.NUMERIC_STORE;
+        break;
+      case 'picture':
+        puzzleStore = PuzzleStorageService.PICTURE_STORE;
+        break;
+    }
+
     const subject = new BehaviorSubject<Puzzle[]>([]);
-    const puzzleStore = PuzzleStorageService.PUZZLE_STORE;
     if (!this.db) {
       console.log('database not initialized');
       subject.complete();
@@ -81,10 +117,38 @@ export class PuzzleStorageService {
     return subject;
   }
 
+  migrate(db: IDBDatabase, puzzles: Puzzle[]) {
+    const puzzleStore = PuzzleStorageService.NUMERIC_STORE;
+    if (!db) {
+      if (!this.db) {
+        console.log('database not initialized');
+        return;
+      }
+      db = this.db;
+    }
+    if (puzzles && puzzles.length > 0) {
+      puzzles.forEach((puzzle: Puzzle) => {
+        const parts = puzzle.id.split('|');
+        if (parts.length == 2) {
+          puzzle.id = parts[1];
+        }
+
+        db.transaction(puzzleStore, "readwrite")
+          .objectStore(puzzleStore)
+          .add(puzzle);
+      })
+    }
+
+    // @ts-ignore
+    db.transaction.oncomplete = function () {
+      console.log("migration complete");
+    }
+  }
+
   private openDb = () => {
     const dbName = PuzzleStorageService.SWAP_TILE_DB;
     const version = PuzzleStorageService.DB_VERSION;
-    const storeName = PuzzleStorageService.PUZZLE_STORE;
+    const storeName = PuzzleStorageService.OLD_PUZZLE_STORE;
     const request = indexedDB.open(dbName, version);
     const self = this;
     request.onsuccess = function () {
@@ -98,12 +162,26 @@ export class PuzzleStorageService {
     }
 
     request.onupgradeneeded = function (event) {
-      console.log(`Upgrading database ${dbName} to version ${version}`);
       // @ts-ignore
       const db: IDBDatabase = event.currentTarget.result;
-      self.store = db.createObjectStore(storeName, {keyPath: "id"});
+      // @ts-ignore
+      const transaction: IDBTransaction = event.target.transaction;
+
+      console.log(`Upgrading database ${dbName}`);
+      console.log(`from: ${event.oldVersion} to: ${event.newVersion}`);
+
+      self.numericStore = db.createObjectStore('numeric', {keyPath: "id"});
+      self.pictureStore = db.createObjectStore('puzzle', {keyPath: "id"});
+      self.oldPuzzleStore = transaction.objectStore(storeName);
+
+      const result = self.oldPuzzleStore.getAll()
+      result.onsuccess = (event) => {
+        transaction.oncomplete = () => {
+          // @ts-ignore
+          self.migrate(db, event.target.result);
+        }
+      }
+
     }
   }
 }
-
-export class NOT_FOUND {}

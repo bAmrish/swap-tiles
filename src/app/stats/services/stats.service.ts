@@ -10,7 +10,7 @@ export class StatsService{
   }
 
   getAllPuzzles(): Observable<Puzzle[]> {
-    return this.storageService.getAllPuzzles();
+    return this.storageService.getAllPuzzles('numeric');
   }
 
 }
