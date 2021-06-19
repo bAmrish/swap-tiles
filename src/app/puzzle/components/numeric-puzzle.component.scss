@@ -1,14 +1,10 @@
 .game {
 }
 @import "src/styles/variables";
+@import "src/styles/pictures";
 
 $dims: 3, 4, 5, 6, 7, 8, 9, 10;
 
-//@each $dim in $dims {
-//  .game-container-#{$dim} {
-//    width: ($dim*$tile-size);
-//  }
-//}
 .game-container {
   margin: 10px auto;
   width: $container-width;
@@ -63,7 +59,7 @@ $dims: 3, 4, 5, 6, 7, 8, 9, 10;
   width: $container-width;
   height: $container-width;
   z-index: 100;
-  background: url($puzzle-image) no-repeat;
+  //background: url($puzzle-image) no-repeat;
   background-size: $container-width $container-width;
   filter: alpha(Opacity=30);
 }

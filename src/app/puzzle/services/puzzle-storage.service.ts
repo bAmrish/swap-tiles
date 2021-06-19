@@ -170,8 +170,8 @@ export class PuzzleStorageService {
       console.log(`Upgrading database ${dbName}`);
       console.log(`from: ${event.oldVersion} to: ${event.newVersion}`);
 
-      self.numericStore = db.createObjectStore('numeric', {keyPath: "id"});
-      self.pictureStore = db.createObjectStore('puzzle', {keyPath: "id"});
+      self.numericStore = db.createObjectStore(PuzzleStorageService.NUMERIC_STORE, {keyPath: "id"});
+      self.pictureStore = db.createObjectStore(PuzzleStorageService.PICTURE_STORE, {keyPath: "id"});
       self.oldPuzzleStore = transaction.objectStore(storeName);
 
       const result = self.oldPuzzleStore.getAll()

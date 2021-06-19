@@ -77,27 +77,25 @@
 
             </div>
         </div>
-
         <div class="game-container game-container-{{dimension}}">
             <div *ngIf="puzzle.solved" class="solved-message">
                 Solved in {{puzzle.totalMoves}} moves. Good Job!
                 <br> Start a
                 <button (click)="newPuzzle()" mat-button> New Puzzle</button>
             </div>
-            <div class="puzzle-tile-container" >
-                <div [class.hidden]="!showHint && type === 'numeric'" class="result-hint"></div>
+            <div class="puzzle-tile-container">
+                <div [class.hidden]="!showHint && type === 'picture'" class="picture-{{puzzle.picture}} result-hint"></div>
+                <div *ngIf="puzzle.solved && type === 'picture'" class="picture-{{puzzle.picture}} result"></div>
                 <app-tile-container
-                        [puzzle]="puzzle"
-                        *ngIf="puzzle.currentMove.length != 0 && !isLoading"
                         (onMove)="handleMove($event)"
-                        (onUnPause)="unPause()">
+                        (onUnPause)="unPause()"
+                        *ngIf="puzzle.currentMove.length != 0 && !isLoading"
+                        [puzzle]="puzzle">
                 </app-tile-container>
-                <div class="result" *ngIf="puzzle.solved && type === 'picture'"></div>
             </div>
             <div *ngIf="puzzle.currentMove.length == 0 && !isLoading">Unable to generate a puzzle!</div>
-            <mat-progress-spinner mode="indeterminate" *ngIf="isLoading"></mat-progress-spinner>
+            <mat-progress-spinner *ngIf="isLoading" mode="indeterminate"></mat-progress-spinner>
         </div>
-
         <div class="hidden">
             <div><h3>Moves</h3></div>
             <div *ngFor="let move of puzzle.moveHistory; let i = index">
@@ -106,4 +104,3 @@
         </div>
     </ng-template>
 </div>
-

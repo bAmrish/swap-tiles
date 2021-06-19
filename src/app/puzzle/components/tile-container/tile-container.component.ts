@@ -19,8 +19,6 @@ export class TileContainerComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-
-
     for (const property in changes) {
       if (property == 'puzzle') {
         const puzzle: Puzzle = changes['puzzle'].currentValue;

@@ -1,11 +1,18 @@
-<div (click)="onClick()"
-     [ngClass]="{
-        'disabled': disable,
-        'picture': (type === 'picture' && !blank),
-        'numeric': (type==='numeric' && !blank)
-    }"
-     class="tile tile-{{dimension}} bk-{{dimension}}-{{number}}">
-    <div *ngIf="type==='numeric'&& !blank" class="number">
-        {{paused ? "?" : number}}
+<ng-template [ngIf]="blank">
+    <div (click)="onClick()" [class.disabled]="disable"
+         class="tile tile-{{dimension}} bk-{{dimension}}-{{number}}">
     </div>
-</div>
+</ng-template>
+<ng-template [ngIf]="type === 'numeric' && !blank">
+    <div (click)="onClick()" [class.disabled]="disable"
+         class="numeric tile tile-{{dimension}} bk-{{dimension}}-{{number}}">
+        <div class="number">
+            {{paused ? "?" : number}}
+        </div>
+    </div>
+</ng-template>
+<ng-template [ngIf]="type === 'picture' && !blank">
+    <div (click)="onClick()" [class.disabled]="disable"
+         class="picture tile tile-{{dimension}} bk-{{dimension}}-{{number}} picture-{{pictureId}}">
+    </div>
+</ng-template>

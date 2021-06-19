@@ -12,6 +12,7 @@ export class TileComponent {
   @Output() tileClick = new EventEmitter<number>()
   @Input() paused = false;
   @Input() blank = false;
+  @Input() pictureId? = "1";
   @Input() type: 'numeric' | 'picture' = 'numeric';
 
   onClick = () => {

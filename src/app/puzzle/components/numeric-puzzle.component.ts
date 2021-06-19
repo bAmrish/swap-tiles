@@ -1,5 +1,4 @@
 // noinspection JSMethodCanBeStatic
-
 import {Component, HostListener, OnInit} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -24,6 +23,7 @@ export class NumericPuzzleComponent implements OnInit {
   type: PuzzleType = 'numeric';
   private DEFAULT_DIMENSION = 4;
   dimension = this.DEFAULT_DIMENSION;
+  private pictureId? = '1';
 
   constructor(
     private storageService: PuzzleStorageService,
@@ -37,16 +37,20 @@ export class NumericPuzzleComponent implements OnInit {
     setTimeout(() => {
       this.route.queryParams.subscribe(params => {
         const type = this.route.snapshot.params['type']?.trim().toLowerCase();
-        if (type && (type === 'numeric' || type === 'picture')) {
-          this.type = type;
-        } else {
-          this.type = 'numeric';
+        switch (type) {
+          case 'picture':
+            this.type = 'picture';
+            break;
+          default:
+            this.type = 'numeric';
         }
+
         const id = params['n'];
+        const pictureId = params['p']
         if (!id) {
           this.newPuzzle();
         } else {
-          this.getFromDb(id);
+          this.getFromDb(this.type, id, pictureId);
         }
       })
     }, 100);
@@ -54,6 +58,7 @@ export class NumericPuzzleComponent implements OnInit {
 
   @HostListener('document:keydown', ['$event'])
   handleKeyDownEvents = (event: KeyboardEvent) => {
+    if (this.puzzle.solved) return true;
     switch (event.key) {
       case 'ArrowUp':
         this.handleInverseKeyPressed('up');
@@ -107,6 +112,7 @@ export class NumericPuzzleComponent implements OnInit {
   newPuzzle = (puzzle?: Puzzle) => {
     if (!puzzle) {
       puzzle = this.play.getNewPuzzle(this.type, [], this.dimension);
+      this.pictureId = puzzle.picture;
     }
 
     this.puzzle = puzzle;
@@ -175,11 +181,11 @@ export class NumericPuzzleComponent implements OnInit {
     this.save(this.puzzle);
   }
 
-  private getFromDb(id: string) {
-    this.storageService.get(this.type, id).subscribe(puzzle => {
+  private getFromDb(type: PuzzleType, id: string, pictureId?: string) {
+    this.storageService.get(type, id).subscribe(puzzle => {
       if (!puzzle) {
         const numbers = this.getNumbersFromQuery(id);
-        puzzle = this.play.getNewPuzzle(this.type, numbers);
+        puzzle = this.play.getNewPuzzle(this.type, numbers, undefined, pictureId);
       }
       this.newPuzzle(puzzle);
     })
@@ -249,11 +255,17 @@ export class NumericPuzzleComponent implements OnInit {
   }
 
   private setQuery(puzzle: Puzzle) {
+    let queryParams;
+    if (puzzle.type == 'picture') {
+      queryParams = {p: puzzle.picture, n: puzzle.id}
+    } else {
+      queryParams = {n: puzzle.id}
+    }
     this.router.navigate(
       [],
       {
+        queryParams,
         relativeTo: this.route,
-        queryParams: {n: puzzle.id},
         queryParamsHandling: 'merge'
       }).then();
   }

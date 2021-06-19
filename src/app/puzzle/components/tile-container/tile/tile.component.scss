@@ -2,6 +2,7 @@
 @use "sass:math";
 
 @import "src/styles/variables";
+@import "src/styles/pictures";
 
 $dims: 3, 4, 5, 6, 7;
 
@@ -40,7 +41,7 @@ $dims: 3, 4, 5, 6, 7;
 }
 
 .picture {
-  background: url($puzzle-image) no-repeat;
+  //background: url($puzzle-image) no-repeat;
   background-size: $container-width $container-width;
 }
 

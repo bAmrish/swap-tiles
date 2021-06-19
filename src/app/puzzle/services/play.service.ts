@@ -6,6 +6,7 @@ import {Puzzle, PuzzleType} from '../models/puzzle.model';
 export class PlayService {
   private MAX_UNDO = 100;
   private DEFAULT_DIMENSION = 4;
+  private MAX_PICTURE_ID = 5;
 
   move(puzzle: Puzzle, number: number) {
     if (puzzle.solved) {
@@ -45,7 +46,7 @@ export class PlayService {
     }
   }
 
-  getNewPuzzle(type: PuzzleType, numbers?: number[], dimension?: number): Puzzle {
+  getNewPuzzle(type: PuzzleType, numbers?: number[], dimension?: number, pictureId?: string): Puzzle {
     if (!dimension) {
       dimension = this.DEFAULT_DIMENSION;
     }
@@ -65,6 +66,14 @@ export class PlayService {
       BLANK_TILE: dimension * dimension,
       createdAt: new Date()
     };
+    if (puzzle.type == 'picture') {
+      const id = pictureId && parseInt(pictureId);
+      if(id && !isNaN(id) && id >= 1 && id <= this.MAX_PICTURE_ID) {
+        puzzle.picture = id.toString();
+      } else {
+        puzzle.picture = Math.ceil(Math.random() * this.MAX_PICTURE_ID).toString();
+      }
+    }
     puzzle.id = this.getId(puzzle);
     return puzzle
   }
