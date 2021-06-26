@@ -16,6 +16,7 @@ export class TileComponent {
   @Input() type: 'numeric' | 'picture' = 'numeric';
 
   onClick = () => {
+    console.log("!!!")
     this.tileClick.emit(this.number);
   }
 }

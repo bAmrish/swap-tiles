@@ -1,0 +1,57 @@
+@import "src/styles/theme";
+
+.img-thumb {
+  width: 150px;
+  height: 150px;
+  margin: 5px;
+}
+
+.home-title {
+  text-align: center;
+  margin: 20px auto;
+}
+
+.numeric-tiles-container, .picture-tiles-container {
+  display: flex;
+  flex-direction: column;
+  margin: 20px auto;
+  background-color: $background-secondary;
+  border-radius: 5px;
+}
+
+.numeric-tiles-title, .picture-tiles-title {
+  text-align: center;
+  font-size: 30px;
+  margin: 10px auto;
+}
+
+ul.numeric-tiles, .picture-tiles {
+  list-style: none;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  padding-left: 0;
+}
+
+.numeric-tile {
+  padding: 20px;
+  background: $background-tertiary;
+  border-radius: 20px;
+  box-shadow: 1px 1px 2px $background-secondary;
+  width: 100px;
+  height: 100px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.numeric-tiles a {
+  text-decoration: none;
+  color: $secondary;
+  font-family: Limelight, Helvetica, serif;
+}
+
+.picture-tile img {
+  border-radius: 20px;
+}

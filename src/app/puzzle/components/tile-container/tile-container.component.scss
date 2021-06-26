@@ -1,14 +1,5 @@
 @import "src/styles/variables";
 
-//$dims: 3, 4, 5, 6, 7, 8, 9, 10;
-//
-//@each $dim in $dims {
-//  .tile-container-#{$dim} {
-//    width: ($dim*$tile-size);
-//    height: ($dim*$tile-size);
-//  }
-//}
-
 .tile-container {
   width: $container-width;
   height: $container-width;

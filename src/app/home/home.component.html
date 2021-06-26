@@ -1,0 +1,45 @@
+<div class="home-container">
+    <h1 class="home-title">Swap Tiles Puzzle Game!</h1>
+    <div>
+        <div class="numeric-tiles-container">
+            <div class="numeric-tiles-title">Numeric Puzzles</div>
+            <ul class="numeric-tiles">
+                <li class="numeric-tile"><a routerLink="/puzzle/numeric">3 x 3</a></li>
+                <li class="numeric-tile"><a routerLink="/puzzle/numeric">4 x 4</a></li>
+                <li class="numeric-tile"><a routerLink="/puzzle/numeric">5 x 5</a></li>
+                <li class="numeric-tile"><a routerLink="/puzzle/numeric">6 x 6</a></li>
+                <li class="numeric-tile"><a routerLink="/puzzle/numeric">7 x 7</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="picture-tiles-container">
+        <div class="picture-tiles-title">Picture Puzzles</div>
+        <ul class="picture-tiles">
+            <li class="picture-tile">
+                <a [queryParams]="{p: 1}" routerLink="/puzzle/picture">
+                    <img alt="picture 1" class="img-thumb" src="assets/pictures/1.jpeg">
+                </a>
+            </li>
+            <li class="picture-tile">
+                <a [queryParams]="{p: 1}" routerLink="/puzzle/picture">
+                    <img alt="picture 2" class="img-thumb" src="assets/pictures/2.jpeg">
+                </a>
+            </li>
+            <li class="picture-tile">
+                <a [queryParams]="{p: 1}" routerLink="/puzzle/picture">
+                    <img alt="picture 3" class="img-thumb" src="assets/pictures/3.jpeg">
+                </a>
+            </li>
+            <li class="picture-tile">
+                <a [queryParams]="{p: 1}" routerLink="/puzzle/picture">
+                    <img alt="picture 4" class="img-thumb" src="assets/pictures/4.jpeg">
+                </a>
+            </li>
+            <li class="picture-tile">
+                <a [queryParams]="{p: 1}" routerLink="/puzzle/picture">
+                    <img alt="picture 5" class="img-thumb" src="assets/pictures/5.jpeg">
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

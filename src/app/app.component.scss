@@ -1,6 +1,19 @@
-.app-container {
+@import "src/styles/theme";
+
+.navbar {
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
 
-.header {
-  //text-align: center;
+.navbar {
+  padding: 0;
+}
+
+.navbar .navbar-nav a {
+  padding: 10px 20px;
+  margin: 0 10px -2px;
+}
+
+.navbar .navbar-nav a.active {
+  border-bottom: 5px solid $tertiary;
 }

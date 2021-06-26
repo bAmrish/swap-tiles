@@ -4,6 +4,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app.routing.module';
+import {HomeComponent} from './home/home.component';
 import {PuzzleModule} from './puzzle/puzzle.module';
 import {PuzzleRoutingModule} from './puzzle/puzzle.routing.module';
 import {SharedModule} from './shared/shared.module';
@@ -12,7 +13,7 @@ import {StatsRoutingModule} from './stats/stats.routing.module';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent, HomeComponent
   ],
   imports: [
     BrowserModule, BrowserAnimationsModule, SharedModule,

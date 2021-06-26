@@ -1,18 +1,28 @@
-.game {
-}
+@import "src/styles/theme";
 @import "src/styles/variables";
 @import "src/styles/pictures";
 
 $dims: 3, 4, 5, 6, 7, 8, 9, 10;
-
 .game-container {
   margin: 10px auto;
   width: $container-width;
 }
 
+.navbar {
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
 .dimension-selector {
   width: 80px;
   margin: 0 10px;
+}
+
+::ng-deep .mat-select-value{
+  color: $primary !important;
+}
+::ng-deep .mat-select-arrow{
+  border-top-color: $primary !important;
 }
 
 .dimension-radio {
@@ -29,6 +39,7 @@ $dims: 3, 4, 5, 6, 7, 8, 9, 10;
 
 .moves {
   font-size: 16px;
+  color: $primary;
 }
 
 .solved-message {
@@ -44,7 +55,7 @@ $dims: 3, 4, 5, 6, 7, 8, 9, 10;
 .timer {
   display: inline-block;
   padding: 5px 10px;
-  border: 1px #ccc solid;
+  border: 1px $primary solid;
   border-radius: 5px;
 }
 
@@ -65,7 +76,7 @@ $dims: 3, 4, 5, 6, 7, 8, 9, 10;
 }
 
 ::ng-deep .dimension-selector .mat-form-field-underline,
-::ng-deep .dimension-selector .mat-form-field-underline:hover{
+::ng-deep .dimension-selector .mat-form-field-underline:hover {
   display: none !important;
 }
 
@@ -74,6 +85,6 @@ $dims: 3, 4, 5, 6, 7, 8, 9, 10;
 }
 
 ::ng-deep .dimension-selector .mat-form-field-flex,
-::ng-deep .dimension-selector .mat-form-field-infix{
+::ng-deep .dimension-selector .mat-form-field-infix {
   padding-top: 0 !important;
 }

@@ -27,7 +27,7 @@
                             <mat-form-field class="dimension-selector">
                                 <mat-select
                                         (selectionChange)="newPuzzle()"
-                                        [(ngModel)]="dimension" name="dimension">
+                                        [(ngModel)]="dimension" name="dimension" >
                                     <mat-option
                                             *ngFor="let dim of dimensions"
                                             [value]="dim"
@@ -43,13 +43,13 @@
                 <div *ngIf="!puzzle.solved" class="nav-item">
                     <button (click)="undo()"
                             [disabled]="puzzle.moveHistory.length <=0"
-                            mat-icon-button
+                            mat-icon-button color="primary"
                             matTooltip="Undo last move.">
-                        <mat-icon>undo</mat-icon>
+                        <mat-icon color="primary">undo</mat-icon>
                     </button>
                     <button (click)="redo()"
                             [disabled]="puzzle.redoStack.length <=0"
-                            mat-icon-button
+                            mat-icon-button color="primary"
                             matTooltip="Redo last move.">
                         <mat-icon>redo</mat-icon>
                     </button>
@@ -84,7 +84,7 @@
                 <button (click)="newPuzzle()" mat-button> New Puzzle</button>
             </div>
             <div class="puzzle-tile-container">
-                <div [class.hidden]="!showHint && type === 'picture'" class="picture-{{puzzle.picture}} result-hint"></div>
+                <div *ngIf="showHint && type === 'picture' && !puzzle.solved" class="picture-{{puzzle.picture}} result-hint"></div>
                 <div *ngIf="puzzle.solved && type === 'picture'" class="picture-{{puzzle.picture}} result"></div>
                 <app-tile-container
                         (onMove)="handleMove($event)"

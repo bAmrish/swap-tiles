@@ -1,18 +1,20 @@
 <div class="container-fluid app-container">
     <nav class="navbar navbar-dark bg-dark navbar-expand-sm">
         <div class="container-fluid">
-            <div class="navbar-brand">Swap Tiles Puzzle</div>
+            <div class="navbar-brand">
+                <a class="navbar-brand" routerLink="home">Swap Tiles Puzzle</a>
+            </div>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
+                    <a class="nav-link" routerLinkActive="active" routerLink="home">Home</a>
                     <a class="nav-link" routerLinkActive="active" routerLink="puzzle/numeric">Puzzle</a>
                     <a class="nav-link" routerLinkActive="active" routerLink="stats">Stats</a>
                 </div>
             </div>
         </div>
-
     </nav>
     <router-outlet></router-outlet>
 </div>

@@ -1,12 +1,36 @@
+@import "src/styles/theme";
+
+
 /* You can add global styles to this file, and also import other style files */
+
+html, body {
+  height: 100%;
+}
 body {
   margin: 0 auto;
-  font-family: Baloo, Helvetica, serif;
+  font-family: Baloo, "Helvetica Neue", serif;
+  background-color: $background-primary;
+  color: $primary !important;
 }
-
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .hidden {
   display: none;
 }
+
+$navbar-dark-color: rgba($secondary, .55);
+$navbar-dark-hover-color: rgba($secondary, .75);
+$navbar-dark-active-color: $secondary;
+$navbar-dark-disabled-color: rgba($secondary, .25);
+$navbar-dark-toggler-icon-bg: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'><path stroke='#{$navbar-dark-color}' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg>");
+$navbar-dark-toggler-border-color: rgba($secondary, .1);
+
+$body-bg: $background-primary;
+
+$theme-colors: (
+        "primary":    $primary,
+        "secondary":  $secondary,
+        "light":      $background-secondary,
+        "dark":       $background-tertiary
+) !default;
+
+@import "node_modules/bootstrap/scss/bootstrap";
