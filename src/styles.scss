@@ -9,7 +9,9 @@ html, body {
 body {
   margin: 0 auto;
   font-family: Baloo, "Helvetica Neue", serif;
-  background-color: $background-primary;
+  //background-color: $background-primary;
+  background: url($background-image) $background-primary no-repeat;
+  background-size: cover;
   color: $primary !important;
 }
 
@@ -29,8 +31,8 @@ $body-bg: $background-primary;
 $theme-colors: (
         "primary":    $primary,
         "secondary":  $secondary,
-        "light":      $background-secondary,
-        "dark":       $background-tertiary
+        "light":      $background-tertiary,
+        "dark":       $background-primary
 ) !default;
 
 @import "node_modules/bootstrap/scss/bootstrap";
