@@ -1,5 +1,5 @@
 <div class="table-responsive-md">
-    <mat-card>
+    <mat-card class="summary-card">
         <mat-card-title>Summary</mat-card-title>
         <mat-card-content>
             <table #summaryTable [dataSource]="dimArray" class=" stats-table mat-elevation-z3" mat-table>
@@ -99,7 +99,7 @@
             </table>
         </mat-card-content>
     </mat-card>
-    <mat-card>
+    <mat-card class="details-card">
         <mat-card-title>Puzzles</mat-card-title>
         <mat-card-content>
             <table [dataSource]="puzzleDatasource" mat-table>
@@ -107,10 +107,14 @@
                     <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Size</th>
                     <td *matCellDef="let puzzle" class="stats-data-cell" mat-cell> {{puzzle.dimension}}</td>
                 </ng-container>
+                <ng-container matColumnDef="type">
+                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Type</th>
+                    <td *matCellDef="let puzzle" class="stats-data-cell" mat-cell> {{puzzle.type}}</td>
+                </ng-container>
                 <ng-container matColumnDef="id">
                     <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Puzzle</th>
                     <td *matCellDef="let puzzle" class="stats-data-cell" mat-cell>
-                        <a [queryParams]="{'n': puzzle.id}" [routerLink]="['/puzzle']" color="primary" mat-button>
+                        <a [queryParams]="{'n': puzzle.id}" [routerLink]="['/puzzle', puzzle.type]" color="primary" mat-button>
                             View
                         </a>
                     </td>
@@ -150,6 +154,7 @@
                 <tr *matHeaderRowDef="puzzleColumns" mat-header-row></tr>
                 <tr *matRowDef="let row; columns: puzzleColumns;" mat-row></tr>
             </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 20, 50]" [pageSize]="10" showFirstLastButtons></mat-paginator>
         </mat-card-content>
     </mat-card>
 </div>

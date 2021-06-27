@@ -1,3 +1,9 @@
+@import "src/styles/theme";
+
+.summary-card, .details-card {
+  margin-top: 10px;
+}
+
 table {
   width: 100%;
   overflow-y: scroll;
@@ -6,8 +12,14 @@ table {
 table .size {
   min-width: 100px;
 }
+
 .stats-head-cell, .stats-data-cell {
   padding: 10px;
+}
+
+.stats-data-cell a {
+  color: $primary;
+  margin-left: -10px;
 }
 
 .stats-table tr:last-child td{

@@ -119,6 +119,7 @@ export class PuzzleStorageService {
 
   migrate(db: IDBDatabase, puzzles: Puzzle[]) {
     const puzzleStore = PuzzleStorageService.NUMERIC_STORE;
+
     if (!db) {
       if (!this.db) {
         console.log('database not initialized');
@@ -126,12 +127,15 @@ export class PuzzleStorageService {
       }
       db = this.db;
     }
+
     if (puzzles && puzzles.length > 0) {
       puzzles.forEach((puzzle: Puzzle) => {
         const parts = puzzle.id.split('|');
         if (parts.length == 2) {
           puzzle.id = parts[1];
         }
+
+        puzzle.type = 'numeric';
 
         db.transaction(puzzleStore, "readwrite")
           .objectStore(puzzleStore)

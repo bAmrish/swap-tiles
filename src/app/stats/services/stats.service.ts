@@ -9,8 +9,12 @@ export class StatsService{
   constructor(private storageService: PuzzleStorageService) {
   }
 
-  getAllPuzzles(): Observable<Puzzle[]> {
+  getNumericPuzzles(): Observable<Puzzle[]> {
     return this.storageService.getAllPuzzles('numeric');
+  }
+
+  getPicturePuzzles(): Observable<Puzzle[]> {
+    return this.storageService.getAllPuzzles('picture');
   }
 
 }

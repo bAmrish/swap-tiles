@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {combineLatest} from 'rxjs';
 import {Puzzle} from '../../puzzle/models/puzzle.model';
 import {Stats} from '../models/stats.model';
 import {StatsService} from '../services/stats.service';
@@ -19,8 +20,12 @@ export class StatsComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
-      this.statsService.getAllPuzzles().subscribe(puzzles => {
-        this.puzzles = puzzles;
+      const numeric$ = this.statsService.getNumericPuzzles();
+      const picture$ = this.statsService.getPicturePuzzles();
+      combineLatest([numeric$, picture$]).subscribe(([numeric, picture]) => {
+        this.puzzles = [...numeric, ...picture].sort((a, b) => {
+          return a.createdAt.getDate() - b.createdAt.getDate()
+        });
         this.calculateStats();
       });
     }, 1000);

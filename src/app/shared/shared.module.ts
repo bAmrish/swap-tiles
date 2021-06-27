@@ -7,6 +7,7 @@ import {MatOptionModule} from '@angular/material/core';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
+import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatSelectModule} from '@angular/material/select';
@@ -30,7 +31,8 @@ const MAT_MODULES = [
   MatTableModule,
   MatButtonModule,
   MatButtonToggleModule,
-  MatCardModule
+  MatCardModule,
+  MatPaginatorModule
 ]
 const ALL_MODULES = [...MAT_MODULES, CommonModule];
 
