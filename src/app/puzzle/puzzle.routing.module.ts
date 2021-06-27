@@ -1,9 +1,9 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {NumericPuzzleComponent} from './components/numeric-puzzle.component';
+import {PuzzleComponent} from './components/puzzle.component';
 
 const ROUTES: Routes = [
-  {path: 'puzzle/:type', component: NumericPuzzleComponent}
+  {path: 'puzzle/:type', component: PuzzleComponent}
 
 ];
 

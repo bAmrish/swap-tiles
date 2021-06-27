@@ -8,11 +8,11 @@ import {PlayService} from '../services/play.service';
 import {PuzzleStorageService} from '../services/puzzle-storage.service';
 
 @Component({
-  selector: 'app-game',
-  templateUrl: './numeric-puzzle.component.html',
-  styleUrls: ['./numeric-puzzle.component.scss']
+  selector: 'app-puzzle',
+  templateUrl: './puzzle.component.html',
+  styleUrls: ['./puzzle.component.scss']
 })
-export class NumericPuzzleComponent implements OnInit {
+export class PuzzleComponent implements OnInit {
 
   // @ts-ignore
   puzzle: Puzzle;
