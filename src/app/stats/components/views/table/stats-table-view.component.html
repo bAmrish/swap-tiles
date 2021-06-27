@@ -64,13 +64,11 @@
                     <th *matHeaderCellDef class="stats-head-cell" mat-header-cell>Best Time</th>
                     <td *matCellDef="let element" class="stats-data-cell" mat-cell>
                         <ng-template [ngIf]="element.stats.bestTime">
-                            <a [queryParams]="{'n': element.stats.bestTime.id}" [routerLink]="['/puzzle']" mat-button>
+                            <a [queryParams]="{'n': element.stats.bestTime.id}" [routerLink]="['/puzzle', element.stats.bestTime.type]" mat-button>
                                 {{element.stats.bestTime.solveTime}}
                             </a>
                         </ng-template>
-                        <ng-template [ngIf]="!element.stats.bestTime">
-
-                        </ng-template>
+                        <ng-template [ngIf]="!element.stats.bestTime"></ng-template>
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="averageTime">
@@ -81,13 +79,11 @@
                     <th *matHeaderCellDef class="stats-head-cell" mat-header-cell>Best Moves</th>
                     <td *matCellDef="let element" class="stats-data-cell" mat-cell>
                         <ng-template [ngIf]="element.stats.bestMove">
-                            <a [queryParams]="{'n': element.stats.bestMove.id}" [routerLink]="['/puzzle']" mat-button>
+                            <a [queryParams]="{'n': element.stats.bestMove.id}" [routerLink]="['/puzzle', element.stats.bestMove.type]" mat-button>
                                 {{element.stats.bestMove.totalMoves}}
                             </a>
                         </ng-template>
-                        <ng-template [ngIf]="!element.stats.bestMove">
-
-                        </ng-template>
+                        <ng-template [ngIf]="!element.stats.bestMove"></ng-template>
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="averageMoves">
