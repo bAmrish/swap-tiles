@@ -4,6 +4,7 @@
 
 $dims: 3, 4, 5, 6, 7, 8, 9, 10;
 .game-container {
+  position: relative;
   margin: 10px auto;
   width: $container-width;
 }
@@ -61,6 +62,19 @@ $dims: 3, 4, 5, 6, 7, 8, 9, 10;
 
 .puzzle-tile-container {
   position: relative;
+}
+
+.help-message {
+  position: absolute;
+  top: 10px;
+  left: -30px;
+  cursor: pointer;
+}
+
+.help-message mat-icon {
+  //font-size: 12px;
+  width: unset;
+  height: unset;
 }
 
 .result, .result-hint {

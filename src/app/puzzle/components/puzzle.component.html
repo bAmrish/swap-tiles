@@ -84,6 +84,12 @@
                 <br> Start a
                 <button (click)="newPuzzle()" mat-button> New Puzzle</button>
             </div>
+            <div *ngIf="!puzzle.solved && puzzle.type === 'picture'"
+                 class="help-message"
+                 (mousedown)="showHint=true"
+                 (mouseup)="showHint=false" matTooltip="Click to view the final solution. OR Press the [Shift] key on your keyboard">
+                <mat-icon>help</mat-icon>
+            </div>
             <div class="puzzle-tile-container">
                 <div *ngIf="showHint && type === 'picture' && !puzzle.solved" class="picture-{{puzzle.picture}} result-hint"></div>
                 <div *ngIf="puzzle.solved && type === 'picture'" class="picture-{{puzzle.picture}} result"></div>
