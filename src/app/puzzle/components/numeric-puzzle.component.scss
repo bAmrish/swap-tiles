@@ -70,7 +70,6 @@ $dims: 3, 4, 5, 6, 7, 8, 9, 10;
   width: $container-width;
   height: $container-width;
   z-index: 100;
-  //background: url($puzzle-image) no-repeat;
   background-size: $container-width $container-width;
   filter: alpha(Opacity=30);
 }

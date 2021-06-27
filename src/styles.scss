@@ -1,6 +1,5 @@
 @import "src/styles/theme";
 
-
 /* You can add global styles to this file, and also import other style files */
 
 html, body {
@@ -34,5 +33,6 @@ $theme-colors: (
         "light":      $background-tertiary,
         "dark":       $background-primary
 ) !default;
+
 
 @import "node_modules/bootstrap/scss/bootstrap";
