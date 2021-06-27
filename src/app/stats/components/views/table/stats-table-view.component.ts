@@ -1,5 +1,6 @@
 import {Component, Input, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
+import {MatSort} from '@angular/material/sort';
 import {MatTable, MatTableDataSource} from '@angular/material/table';
 import {DateTime} from 'luxon';
 import {Puzzle} from '../../../../puzzle/models/puzzle.model';
@@ -18,11 +19,12 @@ export class StatsTableViewComponent implements OnChanges {
   puzzleDatasource = new MatTableDataSource<Puzzle>();
   dt = DateTime;
   @ViewChild(MatPaginator) paginator: MatPaginator | null = null;
+  @ViewChild(MatSort) sort: MatSort | null = null;
 
   // @ts-ignore
   @ViewChild("summaryTable") summaryTable: MatTable<{ dim: number, stats: Stats }>;
   summaryColumns = ['size', 'totalPuzzles', 'totalSolved', 'totalUnsolved', 'bestTime', 'averageTime', 'bestMoves', 'averageMoves']
-  puzzleColumns = ['size', 'type', 'id', 'createdAt', 'solved', 'moves', 'time', 'solvedAt'];
+  puzzleColumns = ['size', 'type', 'id', 'createdAt', 'solved', 'totalMoves', 'time', 'solvedAt'];
 
   ngOnChanges(changes: SimpleChanges) {
     if (this.dimArray.length > 0) {
@@ -37,6 +39,7 @@ export class StatsTableViewComponent implements OnChanges {
       this.puzzleDatasource.data = this.puzzles.slice(0)
         .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
       this.puzzleDatasource.paginator = this.paginator;
+      this.puzzleDatasource.sort = this.sort;
       // this.paginator?.pageSize = 10
     }
   }

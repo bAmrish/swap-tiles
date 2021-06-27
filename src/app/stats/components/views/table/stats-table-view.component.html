@@ -102,17 +102,17 @@
     <mat-card class="details-card">
         <mat-card-title>Puzzles</mat-card-title>
         <mat-card-content>
-            <table [dataSource]="puzzleDatasource" mat-table>
+            <table [dataSource]="puzzleDatasource" mat-table matSort>
                 <ng-container matColumnDef="size">
-                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Size</th>
+                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell mat-sort-header> Size</th>
                     <td *matCellDef="let puzzle" class="stats-data-cell" mat-cell> {{puzzle.dimension}}</td>
                 </ng-container>
                 <ng-container matColumnDef="type">
-                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Type</th>
+                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell mat-sort-header> Type</th>
                     <td *matCellDef="let puzzle" class="stats-data-cell" mat-cell> {{puzzle.type}}</td>
                 </ng-container>
                 <ng-container matColumnDef="id">
-                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Puzzle</th>
+                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell mat-sort-header> Puzzle</th>
                     <td *matCellDef="let puzzle" class="stats-data-cell" mat-cell>
                         <a [queryParams]="{'n': puzzle.id}" [routerLink]="['/puzzle', puzzle.type]" color="primary" mat-button>
                             View
@@ -120,27 +120,27 @@
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="createdAt">
-                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Started At</th>
+                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell mat-sort-header> Started At</th>
                     <td *matCellDef="let puzzle" class="stats-data-cell" mat-cell>
                         {{dt.fromISO(puzzle.createdAt.toISOString()).toRelative()}}
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="solved">
-                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Solved</th>
+                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell mat-sort-header> Solved</th>
                     <td *matCellDef="let puzzle" class="stats-data-cell" mat-cell>
                         {{puzzle.solved ? 'Yes' : 'No'}}
                     </td>
                 </ng-container>
-                <ng-container matColumnDef="moves">
-                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Moves</th>
+                <ng-container matColumnDef="totalMoves">
+                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell mat-sort-header> Moves</th>
                     <td *matCellDef="let puzzle" class="stats-data-cell" mat-cell> {{puzzle.totalMoves || '-'}}</td>
                 </ng-container>
                 <ng-container matColumnDef="time">
-                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Time</th>
+                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell mat-sort-header> Time</th>
                     <td *matCellDef="let puzzle" class="stats-data-cell" mat-cell> {{puzzle.solveTime || '-'}}</td>
                 </ng-container>
                 <ng-container matColumnDef="solvedAt">
-                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell> Solved At</th>
+                    <th *matHeaderCellDef class="stats-head-cell" mat-header-cell mat-sort-header> Solved At</th>
                     <td *matCellDef="let puzzle" class="stats-data-cell" mat-cell>
                         <ng-template [ngIf]="puzzle.solvedAt">
                             {{dt.fromISO(puzzle.solvedAt.toISOString()).toRelative()}}
