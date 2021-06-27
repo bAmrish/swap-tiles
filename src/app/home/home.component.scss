@@ -36,22 +36,21 @@ ul.numeric-tiles, .picture-tiles {
 }
 
 .numeric-tile {
-  padding: 20px;
   background: $background-tertiary;
   border-radius: 20px;
   box-shadow: 1px 1px 2px $background-secondary;
-  width: 100px;
-  height: 100px;
-  font-size: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .numeric-tiles a {
   text-decoration: none;
   color: $primary;
   font-family: Limelight, Helvetica, serif;
+  width: 100px;
+  height: 100px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .picture-tile img {
