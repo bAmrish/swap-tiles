@@ -4,11 +4,11 @@
         <div class="numeric-tiles-container">
             <div class="numeric-tiles-title">Numeric Puzzles</div>
             <ul class="numeric-tiles">
-                <li class="numeric-tile"><a routerLink="/puzzle/numeric">3 x 3</a></li>
-                <li class="numeric-tile"><a routerLink="/puzzle/numeric">4 x 4</a></li>
-                <li class="numeric-tile"><a routerLink="/puzzle/numeric">5 x 5</a></li>
-                <li class="numeric-tile"><a routerLink="/puzzle/numeric">6 x 6</a></li>
-                <li class="numeric-tile"><a routerLink="/puzzle/numeric">7 x 7</a></li>
+                <li class="numeric-tile"><a [queryParams]="{d: 3}" routerLink="/puzzle/numeric">3 x 3</a></li>
+                <li class="numeric-tile"><a [queryParams]="{d: 4}" routerLink="/puzzle/numeric">4 x 4</a></li>
+                <li class="numeric-tile"><a [queryParams]="{d: 5}" routerLink="/puzzle/numeric">5 x 5</a></li>
+                <li class="numeric-tile"><a [queryParams]="{d: 6}" routerLink="/puzzle/numeric">6 x 6</a></li>
+                <li class="numeric-tile"><a [queryParams]="{d: 7}" routerLink="/puzzle/numeric">7 x 7</a></li>
             </ul>
         </div>
     </div>
@@ -21,22 +21,22 @@
                 </a>
             </li>
             <li class="picture-tile">
-                <a [queryParams]="{p: 1}" routerLink="/puzzle/picture">
+                <a [queryParams]="{p: 2}" routerLink="/puzzle/picture">
                     <img alt="picture 2" class="img-thumb" src="assets/pictures/2.jpeg">
                 </a>
             </li>
             <li class="picture-tile">
-                <a [queryParams]="{p: 1}" routerLink="/puzzle/picture">
+                <a [queryParams]="{p: 3}" routerLink="/puzzle/picture">
                     <img alt="picture 3" class="img-thumb" src="assets/pictures/3.jpeg">
                 </a>
             </li>
             <li class="picture-tile">
-                <a [queryParams]="{p: 1}" routerLink="/puzzle/picture">
+                <a [queryParams]="{p: 4}" routerLink="/puzzle/picture">
                     <img alt="picture 4" class="img-thumb" src="assets/pictures/4.jpeg">
                 </a>
             </li>
             <li class="picture-tile">
-                <a [queryParams]="{p: 1}" routerLink="/puzzle/picture">
+                <a [queryParams]="{p: 5}" routerLink="/puzzle/picture">
                     <img alt="picture 5" class="img-thumb" src="assets/pictures/5.jpeg">
                 </a>
             </li>

@@ -47,8 +47,18 @@ export class NumericPuzzleComponent implements OnInit {
 
         const id = params['n'];
         const pictureId = params['p']
-        if (!id) {
+        const dimension = params['d']
+        if (!id && !pictureId && !dimension) {
           this.newPuzzle();
+        } else if (this.type == 'picture' && pictureId && !id) {
+          const puzzle = this.play.getNewPuzzle(this.type, [], this.dimension);
+          puzzle.picture = pictureId;
+          this.pictureId = pictureId;
+          this.newPuzzle(puzzle);
+        }
+        else if (this.type == 'numeric' && dimension && !id) {
+          const puzzle = this.play.getNewPuzzle(this.type, [], dimension);
+          this.newPuzzle(puzzle);
         } else {
           this.getFromDb(this.type, id, pictureId);
         }
