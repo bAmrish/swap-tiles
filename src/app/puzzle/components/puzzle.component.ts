@@ -13,12 +13,11 @@ import {PuzzleStorageService} from '../services/puzzle-storage.service';
   styleUrls: ['./puzzle.component.scss']
 })
 export class PuzzleComponent implements OnInit {
-
   // @ts-ignore
   puzzle: Puzzle;
   dimensions = [3, 4, 5, 6, 7];
   isLoading = false;
-  public timer: Timer | null = null;
+  timer: Timer | null = null;
   showHint = false;
   type: PuzzleType = 'numeric';
   private DEFAULT_DIMENSION = 4;
@@ -55,8 +54,7 @@ export class PuzzleComponent implements OnInit {
           puzzle.picture = pictureId;
           this.pictureId = pictureId;
           this.newPuzzle(puzzle);
-        }
-        else if (this.type == 'numeric' && dimension && !id) {
+        } else if (this.type == 'numeric' && dimension && !id) {
           const puzzle = this.play.getNewPuzzle(this.type, [], dimension);
           this.newPuzzle(puzzle);
         } else {
@@ -122,7 +120,12 @@ export class PuzzleComponent implements OnInit {
   newPuzzle = (puzzle?: Puzzle) => {
     if (!puzzle) {
       puzzle = this.play.getNewPuzzle(this.type, [], this.dimension);
-      this.pictureId = puzzle.picture;
+      if (this.pictureId) {
+        this.pictureId = this.pictureId || puzzle.picture;
+        puzzle.picture = this.pictureId;
+      } else {
+        this.pictureId = puzzle.picture;
+      }
     }
 
     this.puzzle = puzzle;
